@@ -25,33 +25,44 @@ public class ExamPortalView extends JFrame{
         this.add(loginPanel);
     }
 
-    // TODO JPanel stuff should be on another function, add the buttons and register button
     private void setLoginPanelGridLayout(JPanel panel) {
-        GridLayout gridLayout = new GridLayout(4, 0);
-        panel.setLayout(gridLayout);
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
         JLabel loginLabel = new JLabel("Welcome to the Login page");
         JLabel usernameLabel = new JLabel("Username: ");
         JLabel passwordLabel = new JLabel("Password: ");
         JTextField usernameField = new JTextField();
-        usernameField.setPreferredSize(new Dimension(150, 20));
+        usernameField.setPreferredSize(new Dimension(120, 20));
         JTextField passwordField = new JPasswordField();
-        passwordField.setPreferredSize(new Dimension(150, 20));
+        passwordField.setPreferredSize(new Dimension(120, 20));
         JButton studentLogin = new JButton("Student Login");
         JButton instructorLogin = new JButton("Instructor Login");
+        JButton register = new JButton("Register");
 
-        JPanel firstLine = new JPanel();
-        firstLine.add(loginLabel);
-        JPanel secondLine = new JPanel();
-        secondLine.add(usernameLabel);
-        secondLine.add(usernameField);
-        JPanel thirdLine = new JPanel();
-        thirdLine.add(passwordLabel);
-        thirdLine.add(passwordField);
-
-        panel.add(firstLine);
-        panel.add(secondLine);
-        panel.add(thirdLine);
-
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridwidth = 2;
+        panel.add(loginLabel, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridy = 1;
+        panel.add(usernameLabel, gbc);
+        gbc.gridx = 1;
+        panel.add(usernameField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(passwordLabel, gbc);
+        gbc.gridx = 1;
+        panel.add(passwordField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(studentLogin, gbc);
+        gbc.gridx = 1;
+        panel.add(instructorLogin, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        panel.add(register, gbc);
     }
 
 }
