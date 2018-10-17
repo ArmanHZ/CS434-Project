@@ -4,8 +4,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("Test");
-        System.out.println("Onat's Test");
-        
+        ExamPortalController controller = new ExamPortalController();
     }
 }
