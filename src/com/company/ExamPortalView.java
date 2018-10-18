@@ -1,34 +1,33 @@
 package com.company;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 
-public class ExamPortalView extends JFrame{
+public class ExamPortalView extends JFrame {
 
     private JPanel loginPanel;
 
-    public ExamPortalView() {
+    public ExamPortalView(ExamPortalController controller) {
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //loginPanel();
-        registerPanel();
+        loginPanel(controller);
         this.revalidate();
         this.repaint();
     }
 
-    private void loginPanel() {
+    private void loginPanel(ExamPortalController controller) {
         loginPanel = new JPanel();
         loginPanel.setSize(300, 300);
         loginPanel.setLayout(new BorderLayout());
-        setLoginPanelLayout(loginPanel);
+        setLoginPanelLayout(loginPanel, controller);
 
         this.setSize(loginPanel.getSize());
         this.add(loginPanel);
     }
 
-    private void setLoginPanelLayout(JPanel panel) {
+    private void setLoginPanelLayout(JPanel panel, ExamPortalController controller) {
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         Font loginFont = new Font("Arial Rounded MT", Font.BOLD, 20);
@@ -44,6 +43,12 @@ public class ExamPortalView extends JFrame{
         JButton studentLogin = new JButton("Student Login");
         JButton instructorLogin = new JButton("Instructor Login");
         JButton register = new JButton("Register");
+        register.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                controller.registerButtonClicked();
+            }
+        });
 
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -70,8 +75,6 @@ public class ExamPortalView extends JFrame{
         panel.add(register, gbc);
     }
 
-    // TODO Separated register panel, when register button is clicked the loginPanel closes and a new registerPanel will open
-    // What the hell man!!!
     public void registerPanel() {
         JTabbedPane userSelection = new JTabbedPane();
         JPanel studentRegisterPanel = studentRegisterPanel();
@@ -183,4 +186,10 @@ public class ExamPortalView extends JFrame{
         return studentRegisterPanel;
     }
 
+    public void setRegisterPanel() {
+        this.getContentPane().removeAll();
+        registerPanel();
+        this.revalidate();
+        this.repaint();
+    }
 }

@@ -2,7 +2,13 @@ package com.company;
 
 public class ExamPortalController {
 
+    private ExamPortalView view;
+
     public ExamPortalController() {
-        ExamPortalView view = new ExamPortalView();
+        view = new ExamPortalView(this);
+    }
+
+    public void registerButtonClicked() {
+        view.setRegisterPanel();
     }
 }
