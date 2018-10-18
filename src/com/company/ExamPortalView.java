@@ -67,4 +67,9 @@ public class ExamPortalView extends JFrame{
         panel.add(register, gbc);
     }
 
+    // TODO Separated register panel, when register button is clicked the loginPanel closes and a new registerPanel will open
+    private void registerPanel() {
+
+    }
+
 }
