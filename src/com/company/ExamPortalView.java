@@ -19,17 +19,19 @@ public class ExamPortalView extends JFrame{
         loginPanel = new JPanel();
         loginPanel.setSize(300, 300);
         loginPanel.setLayout(new BorderLayout());
-        setLoginPanelGridLayout(loginPanel);
+        setLoginPanelLayout(loginPanel);
 
         this.setSize(loginPanel.getSize());
         this.add(loginPanel);
     }
 
-    private void setLoginPanelGridLayout(JPanel panel) {
+    private void setLoginPanelLayout(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        Font loginFont = new Font("Arial Rounded MT", Font.BOLD, 20);
 
         JLabel loginLabel = new JLabel("Welcome to the Login page");
+        loginLabel.setFont(loginFont);
         JLabel usernameLabel = new JLabel("Username: ");
         JLabel passwordLabel = new JLabel("Password: ");
         JTextField usernameField = new JTextField();
