@@ -1,6 +1,8 @@
 package com.company;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class ExamPortalView extends JFrame{
@@ -10,7 +12,8 @@ public class ExamPortalView extends JFrame{
     public ExamPortalView() {
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginPanel();
+        //loginPanel();
+        registerPanel();
         this.revalidate();
         this.repaint();
     }
@@ -68,8 +71,116 @@ public class ExamPortalView extends JFrame{
     }
 
     // TODO Separated register panel, when register button is clicked the loginPanel closes and a new registerPanel will open
-    private void registerPanel() {
+    // What the hell man!!!
+    public void registerPanel() {
+        JTabbedPane userSelection = new JTabbedPane();
+        JPanel studentRegisterPanel = studentRegisterPanel();
+        JPanel instructorRegisterPanel = instructorRegisterPanel();
+        userSelection.add("Student", studentRegisterPanel);
+        userSelection.add("Instructor", instructorRegisterPanel);
+        this.add(userSelection);
+    }
 
+    private JPanel studentRegisterPanel() {
+        JPanel studentRegisterPanel = new JPanel();
+        studentRegisterPanel.setSize(500,500);
+        JPanel upperPanel = new JPanel();
+        JLabel register = new JLabel("STUDENT REGISTER");
+        register.setFont(new Font("Serif", Font.BOLD, 22));
+        upperPanel.add(register);
+        studentRegisterPanel.add(upperPanel,BorderLayout.NORTH);
+        JPanel mainPanel = new JPanel();
+        studentRegisterPanel.add(mainPanel,BorderLayout.CENTER);
+        mainPanel.setLayout(new GridLayout(5,2));
+        JLabel user = new JLabel("User Name:");
+        user.setFont(new Font("Serif", Font.PLAIN, 17));
+        JTextField userName = new JTextField();
+        userName.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(user);
+        mainPanel.add(userName);
+        JLabel password = new JLabel("Password:");
+        password.setFont(new Font("Serif", Font.PLAIN, 17));
+        JPasswordField passwordValue = new JPasswordField();
+        passwordValue.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(password);
+        mainPanel.add(passwordValue);
+        JLabel repassword = new JLabel("Retype Password:");
+        repassword.setFont(new Font("Serif", Font.PLAIN, 17));
+        JPasswordField repasswordValue = new JPasswordField();
+        repasswordValue.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(repassword);
+        mainPanel.add(repasswordValue);
+        JLabel email = new JLabel("E-mail Address:");
+        email.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(email);
+        JTextField emailValue = new JTextField();
+        emailValue.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(emailValue);
+        JLabel department = new JLabel("Department:");
+        department.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(department);
+        String[] departments = {"Computer Science","Industrial Engineering","Business Administration","Music"};
+        JComboBox departmentBox = new JComboBox(departments);
+        departmentBox.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(departmentBox);
+
+        JButton submitButton = new JButton("SUBMIT");
+        submitButton.setFont(new Font("Serif", Font.BOLD, 15));
+        studentRegisterPanel.add(submitButton,BorderLayout.SOUTH);
+        this.setSize(studentRegisterPanel.getSize());
+        this.add(studentRegisterPanel);
+        return studentRegisterPanel;
+    }
+
+    private JPanel instructorRegisterPanel() {
+        JPanel studentRegisterPanel = new JPanel();
+        studentRegisterPanel.setSize(500,500);
+        JPanel upperPanel = new JPanel();
+        JLabel register = new JLabel("INSTRUCTOR REGISTER");
+        register.setFont(new Font("Serif", Font.BOLD, 22));
+        upperPanel.add(register);
+        studentRegisterPanel.add(upperPanel,BorderLayout.NORTH);
+        JPanel mainPanel = new JPanel();
+        studentRegisterPanel.add(mainPanel,BorderLayout.CENTER);
+        mainPanel.setLayout(new GridLayout(5,2));
+        JLabel user = new JLabel("User Name:");
+        user.setFont(new Font("Serif", Font.PLAIN, 17));
+        JTextField userName = new JTextField();
+        userName.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(user);
+        mainPanel.add(userName);
+        JLabel password = new JLabel("Password:");
+        password.setFont(new Font("Serif", Font.PLAIN, 17));
+        JPasswordField passwordValue = new JPasswordField();
+        passwordValue.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(password);
+        mainPanel.add(passwordValue);
+        JLabel repassword = new JLabel("Retype Password:");
+        repassword.setFont(new Font("Serif", Font.PLAIN, 17));
+        JPasswordField repasswordValue = new JPasswordField();
+        repasswordValue.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(repassword);
+        mainPanel.add(repasswordValue);
+        JLabel email = new JLabel("E-mail Address:");
+        email.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(email);
+        JTextField emailValue = new JTextField();
+        emailValue.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(emailValue);
+        JLabel department = new JLabel("Department:");
+        department.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(department);
+        String[] departments = {"Computer Science","Industrial Engineering","Business Administration","Music"};
+        JComboBox departmentBox = new JComboBox(departments);
+        departmentBox.setFont(new Font("Serif", Font.PLAIN, 17));
+        mainPanel.add(departmentBox);
+
+        JButton submitButton = new JButton("SUBMIT");
+        submitButton.setFont(new Font("Serif", Font.BOLD, 15));
+        studentRegisterPanel.add(submitButton,BorderLayout.SOUTH);
+        this.setSize(studentRegisterPanel.getSize());
+        this.add(studentRegisterPanel);
+        return studentRegisterPanel;
     }
 
 }
