@@ -7,8 +7,8 @@ public class ExamPortalController {
 
     public ExamPortalController() {
         view = new ExamPortalView(this);
-        connection = new SQLConnection();
-        connection.connectionTest();
+//        connection = new SQLConnection();
+//        connection.connect();
     }
 
     public void registerButtonClicked() {
