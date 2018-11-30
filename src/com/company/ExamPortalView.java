@@ -13,6 +13,8 @@ public class ExamPortalView extends JFrame {
     private static final Font TEXT_FONT_BOLD = new Font("Banschrift", Font.BOLD, 18);
     private static final Dimension TEXT_FIELD_DIM = new Dimension(180, 30);
 
+    private static final int INSTRUCTOR_PASS = 53894;
+
     public ExamPortalView(ExamPortalController controller) {
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -232,6 +234,10 @@ public class ExamPortalView extends JFrame {
         email.setFont(TEXT_FONT_BOLD);
         northPanel.add(email, GBC);
         GBC.gridy++;
+        JLabel instructorCode = new JLabel("Instructor Access Code: ");
+        instructorCode.setFont(TEXT_FONT_BOLD);
+        northPanel.add(instructorCode, GBC);
+        GBC.gridy++;
         JLabel department = new JLabel("Department: ", JLabel.LEFT);
         department.setFont(TEXT_FONT_BOLD);
         northPanel.add(department, GBC);
@@ -262,6 +268,10 @@ public class ExamPortalView extends JFrame {
         emailField.setPreferredSize(TEXT_FIELD_DIM);
         emailField.setFont(TEXT_FONT_PLAIN);
         northPanel.add(emailField, GBC);
+        GBC.gridy++;
+        JTextField instructorCodeField = new JTextField();
+        instructorCodeField.setPreferredSize(TEXT_FIELD_DIM);
+        northPanel.add(instructorCodeField, GBC);
         GBC.gridy++;
         String[] departments = {"Computer Science", "Industrial Engineering", "Business Administration", "Music"};
         JComboBox departmentBox = new JComboBox(departments);
