@@ -3,6 +3,7 @@ package com.company;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.regex.Pattern;
 import javax.swing.*;
 
 public class ExamPortalView extends JFrame {
@@ -24,12 +25,47 @@ public class ExamPortalView extends JFrame {
         this.repaint();
     }
 
+    private void instructorPanel(ExamPortalController controller) {
+        JPanel instructorPanel = new JPanel();
+        instructorPanel.setSize(850, 400);
+        setInstructorPanel(instructorPanel, controller);
+        this.setSize(instructorPanel.getSize());
+        this.add(instructorPanel);
+    }
+
+    private void setInstructorPanel(JPanel instructorPanel, ExamPortalController controller) {
+        JPanel upperPanel = new JPanel();
+        upperPanel.setLayout(new GridLayout(1, 4));
+        instructorPanel.add(upperPanel, BorderLayout.NORTH);
+        JButton createExam = new JButton("Create Exam");
+        createExam.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(createExam);
+        createExamButtonActionListener(createExam, controller);
+        JButton viewScores = new JButton("View Scores");
+        viewScores.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(viewScores);
+        JButton changePassword = new JButton("Change Password");
+        changePassword.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(changePassword);
+        JButton viewMessage = new JButton("View Message");
+        viewMessage.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(viewMessage);
+    }
+
+    private void createExamButtonActionListener(JButton instructorLogin, ExamPortalController controller) {
+        instructorLogin.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                controller.createExamButtonClicked();
+            }
+        });
+    }
+
     private void loginPanel(ExamPortalController controller) {
         JPanel loginPanel = new JPanel();
         loginPanel.setSize(450, 400);
         loginPanel.setLayout(new BorderLayout());
         setLoginPanelLayout(loginPanel, controller);
-
         this.setSize(loginPanel.getSize());
         this.add(loginPanel);
     }
@@ -72,6 +108,7 @@ public class ExamPortalView extends JFrame {
         studentLogin.setFont(TEXT_FONT_BOLD);
         JButton instructorLogin = new JButton("Instructor Login");
         instructorLogin.setFont(TEXT_FONT_BOLD);
+        instructorLoginButtonActionListener(instructorLogin, controller);
         JButton register = new JButton("Register");
         register.setFont(TEXT_FONT_BOLD);
         registerButtonActionListener(register, controller);
@@ -84,6 +121,15 @@ public class ExamPortalView extends JFrame {
         GBC.gridy = 4;
         GBC.gridwidth = 2;
         panel.add(register, GBC);
+    }
+
+    private void instructorLoginButtonActionListener(JButton instructorLogin, ExamPortalController controller) {
+        instructorLogin.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                controller.instructorLoginButtonClicked();
+            }
+        });
     }
 
     private void registerButtonActionListener(JButton register, ExamPortalController controller) {
@@ -284,6 +330,47 @@ public class ExamPortalView extends JFrame {
     protected void setRegisterPanel() {
         this.getContentPane().removeAll();
         registerPanel();
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void setInstructorPanel(ExamPortalController controller) {
+        this.getContentPane().removeAll();
+        instructorPanel(controller);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void setCreateExamPanel(ExamPortalController controller) {
+        JTextField time = new JTextField(5);
+        time.setText("");
+        String[] examTypes = {"","Multiple", "T/F", "Test"};
+        JComboBox examTypeList = new JComboBox(examTypes);
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Please enter exam time (in minutes), and select exam type: "));
+        panel.add(Box.createVerticalStrut(15)); // a spacer
+        panel.add(new JLabel("Exam Time: "));
+        panel.add(time);
+        panel.add(Box.createHorizontalStrut(15)); // a spacer
+        panel.add(new JLabel("Exam Type: "));
+        panel.add(examTypeList);
+        int result = JOptionPane.showConfirmDialog(null, panel,
+                "Create Exam", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            boolean isInteger = Pattern.matches("^\\d*$", time.getText());
+            if(time.getText().equals("") || examTypeList.getSelectedItem().equals("")) {
+                JOptionPane.showMessageDialog(null, "Please be careful with your selection");
+                setCreateExamPanel(controller);
+            }
+            else if(!isInteger) {
+                JOptionPane.showMessageDialog(null, "You should enter a positive number for exam time");
+                setCreateExamPanel(controller);
+            }
+            else {
+                System.out.println("Time entered: " + time.getText());
+                System.out.println("Exam type entered: " + examTypeList.getSelectedItem());
+            }
+        }
         this.revalidate();
         this.repaint();
     }
