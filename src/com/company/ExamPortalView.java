@@ -1,6 +1,8 @@
 package com.company;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
@@ -25,6 +27,8 @@ public class ExamPortalView extends JFrame {
     }
 
     private void loginPanel(ExamPortalController controller) {
+        GBC.gridx = 0;
+        GBC.gridy = 0;
         JPanel loginPanel = new JPanel();
         loginPanel.setSize(450, 400);
         loginPanel.setLayout(new BorderLayout());
@@ -95,16 +99,16 @@ public class ExamPortalView extends JFrame {
         });
     }
 
-    private void registerPanel() {
+    private void registerPanel(ExamPortalController controller) {
         JTabbedPane userSelection = new JTabbedPane();
-        JPanel studentRegisterPanel = studentRegisterPanel();
+        JPanel studentRegisterPanel = studentRegisterPanel(controller);
         JPanel instructorRegisterPanel = instructorRegisterPanel();
         userSelection.add("Student", studentRegisterPanel);
         userSelection.add("Instructor", instructorRegisterPanel);
         this.add(userSelection);
     }
 
-    private JPanel studentRegisterPanel() {
+    private JPanel studentRegisterPanel(ExamPortalController controller) {
         JPanel studentRegisterPanel = new JPanel();
         this.setSize(new Dimension(500, 500));
         studentRegisterPanel.setLayout(new BorderLayout());
@@ -117,12 +121,8 @@ public class ExamPortalView extends JFrame {
         GBC.gridy = 0;
         northPanel.add(studentRegisterLabel, GBC);
         setStudentRegisterPanelLabels(northPanel);
-        setStudentRegisterPanelFields(northPanel);
-        JButton registerButton = new JButton("Register");
-        registerButton.setFont(TEXT_FONT_BOLD);
-        GBC.gridwidth = 2;
-        GBC.gridx = 0;
-        northPanel.add(registerButton, GBC);
+        setStudentRegisterPanelFields(northPanel, controller);
+
         return studentRegisterPanel;
     }
 
@@ -154,7 +154,7 @@ public class ExamPortalView extends JFrame {
         northPanel.add(department, GBC);
     }
 
-    private void setStudentRegisterPanelFields(JPanel northPanel) {
+    private void setStudentRegisterPanelFields(JPanel northPanel, ExamPortalController controller) {
         GBC.gridy = 1;
         GBC.gridx = 1;
         JTextField nameField = new JTextField();
@@ -185,7 +185,27 @@ public class ExamPortalView extends JFrame {
         departmentBox.setPreferredSize(TEXT_FIELD_DIM);
         departmentBox.setFont(TEXT_FONT_PLAIN);
         northPanel.add(departmentBox, GBC);
-        GBC.gridy++;
+        GBC.gridy++;    //
+        JButton registerButton = new JButton("Register");
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText();
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+                String rePassword = rePasswordField.getText();
+                String email = emailField.getText();
+                String department = departmentBox.getSelectedItem().toString();
+                if (!name.equals("") && !username.equals("") && !password.equals("") && !rePassword.equals("") && !email.equals(""))
+                    controller.studentRegisterButtonClicked(name, username, password, rePassword, email, department);
+                else
+                    JOptionPane.showMessageDialog(northPanel, "One or more fields are empty!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        registerButton.setFont(TEXT_FONT_BOLD);
+        GBC.gridwidth = 2;
+        GBC.gridx = 0;
+        northPanel.add(registerButton, GBC);
     }
 
 
@@ -281,10 +301,15 @@ public class ExamPortalView extends JFrame {
         GBC.gridy++;
     }
 
-    protected void setRegisterPanel() {
+    protected void setRegisterPanel(ExamPortalController controller) {
         this.getContentPane().removeAll();
-        registerPanel();
+        registerPanel(controller);
         this.revalidate();
         this.repaint();
+    }
+
+    protected void resetLoginPanel(ExamPortalController controller) {
+        this.getContentPane().removeAll();
+        loginPanel(controller);
     }
 }

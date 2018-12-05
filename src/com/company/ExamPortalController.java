@@ -35,8 +35,4 @@ public class ExamPortalController {
         return false;
     }
 
-    public void instructorLoginButtonClicked() { view.setInstructorPanel(this); }
-    public void createExamButtonClicked() { view.setCreateExamPanel(this); }
-
-
 }
