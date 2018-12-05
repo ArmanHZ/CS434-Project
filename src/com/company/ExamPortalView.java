@@ -281,7 +281,7 @@ public class ExamPortalView extends JFrame {
         GBC.gridy++;
     }
 
-    protected void setRegisterPanel() {
+    protected void setRegisterPanel(ExamPortalController controller) {
         this.getContentPane().removeAll();
         registerPanel();
         this.revalidate();
