@@ -14,4 +14,9 @@ public class ExamPortalController {
     public void registerButtonClicked() {
         view.setRegisterPanel();
     }
+
+    public void instructorLoginButtonClicked() { view.setInstructorPanel(this); }
+    public void createExamButtonClicked() { view.setCreateExamPanel(this); }
+
+
 }
