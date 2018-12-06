@@ -3,8 +3,6 @@ package com.company;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.*;
@@ -422,7 +420,7 @@ public class ExamPortalView extends JFrame {
             } else {
                 String timeEntered = time.getText();
                 String examTypeSelected = (String) examTypeList.getSelectedItem();
-                String numberOfQuestionsEntered = numberOfQuestions.getText();
+                int numberOfQuestionsEntered = Integer.parseInt(numberOfQuestions.getText());
                 JPanel questionPanel = new JPanel();
                 JPanel southPanel = new JPanel();
                 instructorPanel.add(questionPanel, BorderLayout.CENTER);
@@ -434,7 +432,8 @@ public class ExamPortalView extends JFrame {
                 southPanel.add(previousQuestion);
                 southPanel.add(nextQuestion);
                 southPanel.add(addQuestion);
-                questionPanel.add(new JLabel("Question: "));
+                JLabel questionNumberLabel = new JLabel("Question" + (questionCounter + 1) + ":");
+                questionPanel.add(questionNumberLabel);
                 questionPanel.add(Box.createVerticalStrut(15));
                 JTextField questionField = new JTextField(15);
                 questionPanel.add(questionField);
@@ -449,16 +448,59 @@ public class ExamPortalView extends JFrame {
                     answerBox = new JComboBox(answers);
                 }
                 questionPanel.add(answerBox);
+
+                for (int i = 0; i < numberOfQuestionsEntered; i++) {
+                    questions.add(new Question("", "", examTypeSelected));
+                }
+
                 addQuestion.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String questionText = questionField.getText();
-                        String answerText = (String) answerBox.getSelectedItem();
-                        Question question = new Question(questionText, answerText, examTypeSelected);
-                        questions.add(question);
-                        System.out.println(question);
-                        questionField.setText("");
-                        answerBox.removeAllItems();
+                        if (questionCounter < numberOfQuestionsEntered) {
+                            String questionText = questionField.getText();
+                            String answerText = (String) answerBox.getSelectedItem();
+                            Question question = new Question(questionText, answerText, examTypeSelected);
+                            questions.set(questionCounter, question);
+                            System.out.println(question);
+                            questionField.setText("");
+                            answerBox.setSelectedItem("");
+                            questionCounter++;
+                            questionNumberLabel.setText("Question" + (questionCounter + 1) + ":");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "You already entered " + numberOfQuestionsEntered + " questions");
+                            questionField.setEnabled(false);
+                            answerBox.setEnabled(false);
+                            JPanel uploadPanel = new JPanel();
+                            questionPanel.add(uploadPanel, BorderLayout.CENTER);
+                            JButton uploadExam = new JButton("Upload Exam");
+                            uploadPanel.add(uploadExam);
+                            questionPanel.revalidate();
+                            questionPanel.repaint();
+                        }
+                    }
+                });
+                nextQuestion.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (questionCounter < numberOfQuestionsEntered) {
+                            Question nextQuestion = questions.get(questionCounter);
+                            questionField.setText(nextQuestion.getDescription());
+                            answerBox.setSelectedItem(nextQuestion.getAnswer());
+                            questionNumberLabel.setText("Question" + (questionCounter + 1) + ":");
+                        }
+                    }
+                });
+                previousQuestion.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (questionCounter < numberOfQuestionsEntered && questionCounter != 0) {
+                            System.out.println("Entered here!");
+                            System.out.println("Question counter: " + questionCounter);
+                            Question nextQuestion = questions.get(questionCounter - 1);
+                            questionField.setText(nextQuestion.getDescription());
+                            answerBox.setSelectedItem(nextQuestion.getAnswer());
+                            questionNumberLabel.setText("Question" + (questionCounter) + ":");
+                        }
                     }
                 });
             }

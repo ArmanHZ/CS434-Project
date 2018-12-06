@@ -15,4 +15,12 @@ public class Question {
         return "Question text: " + description + ", answer:" + answer + ", type:" + type;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
 }
