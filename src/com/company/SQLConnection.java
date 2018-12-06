@@ -11,7 +11,6 @@ public class SQLConnection {
 
     SQLConnection() {
         connect();
-//        disconnect();
     }
 
     private void connect() {

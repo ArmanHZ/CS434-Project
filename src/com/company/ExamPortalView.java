@@ -327,11 +327,16 @@ public class ExamPortalView extends JFrame {
         GBC.gridy++;
     }
 
-    protected void setRegisterPanel() {
+    protected void setRegisterPanel(ExamPortalController controller) {
         this.getContentPane().removeAll();
         registerPanel();
         this.revalidate();
         this.repaint();
+    }
+
+    protected void resetLoginPanel(ExamPortalController controller) {
+        this.getContentPane().removeAll();
+        loginPanel(controller);
     }
 
     public void setInstructorPanel(ExamPortalController controller) {
