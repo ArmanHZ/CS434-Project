@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.*;
 
@@ -18,6 +19,8 @@ public class ExamPortalView extends JFrame {
 
     private static final int INSTRUCTOR_PASS = 53894;
     private JPanel instructorPanel;
+    private static int questionCounter = 0;
+    private static ArrayList<Question> questions = new ArrayList<Question>();
 
     public ExamPortalView(ExamPortalController controller) {
         this.setVisible(true);
@@ -29,7 +32,7 @@ public class ExamPortalView extends JFrame {
     }
 
     private void instructorPanel(ExamPortalController controller) {
-        instructorPanel = new JPanel();
+        instructorPanel = new JPanel(new BorderLayout());
         instructorPanel.setSize(850, 400);
         setInstructorPanel(instructorPanel, controller);
         this.setSize(instructorPanel.getSize());
@@ -409,9 +412,34 @@ public class ExamPortalView extends JFrame {
                 String examTypeSelected = (String)examTypeList.getSelectedItem();
                 String numberOfQuestionsEntered = numberOfQuestions.getText();
                 JPanel questionPanel = new JPanel();
-                questionPanel.add(new JButton("Test"));
+                JPanel southPanel = new JPanel();
                 instructorPanel.add(questionPanel,BorderLayout.CENTER);
-
+                instructorPanel.add(southPanel, BorderLayout.SOUTH);
+                southPanel.setLayout(new GridLayout(1,3));
+                JButton previousQuestion = new JButton("Previous");
+                JButton nextQuestion = new JButton("Next");
+                JButton addQuestion = new JButton("Add This Question");
+                southPanel.add(previousQuestion);
+                southPanel.add(nextQuestion);
+                southPanel.add(addQuestion);
+                questionPanel.add(new JLabel("Question: "));
+                questionPanel.add(Box.createVerticalStrut(15));
+                JTextField questionField = new JTextField(15);
+                questionPanel.add(questionField);
+                questionPanel.add(new JLabel("Answer: "));
+                questionPanel.add(Box.createVerticalStrut(15));
+                JTextField answerField = new JTextField(15);
+                questionPanel.add(answerField);
+                addQuestion.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String questionText = questionField.getText();
+                        String answerText = answerField.getText();
+                        Question question = new Question(questionText, answerText, examTypeSelected);
+                        questions.add(question);
+                        System.out.println("Q: " + questionText + " A: " + answerText + " Type: " + examTypeSelected);
+                    }
+                });
             }
         }
         this.revalidate();
