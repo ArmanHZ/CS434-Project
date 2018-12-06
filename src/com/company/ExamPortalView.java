@@ -344,11 +344,15 @@ public class ExamPortalView extends JFrame {
     public void setCreateExamPanel(ExamPortalController controller) {
         JTextField time = new JTextField(5);
         time.setText("");
-        String[] examTypes = {"","Multiple", "T/F", "Test"};
+
+        String[] examTypes = {"", "Multiple", "T/F", "Test"};
         JComboBox examTypeList = new JComboBox(examTypes);
+
         JTextField numberOfQuestions = new JTextField(5);
         numberOfQuestions.setText("");
+
         JPanel panel = new JPanel();
+
         panel.add(new JLabel("Please enter exam time (in minutes), number of questions for the exam and select exam type: "));
         panel.add(Box.createVerticalStrut(15)); // a spacer
         panel.add(new JLabel("Exam Time: "));
@@ -359,27 +363,26 @@ public class ExamPortalView extends JFrame {
         panel.add(Box.createHorizontalStrut(15)); // a spacer
         panel.add(new JLabel("Number of questions: "));
         panel.add(numberOfQuestions);
+
         int result = JOptionPane.showConfirmDialog(null, panel,
                 "Create Exam", JOptionPane.OK_CANCEL_OPTION);
+
         if (result == JOptionPane.OK_OPTION) {
             boolean isTimeInteger = Pattern.matches("^\\d*$", time.getText());
             boolean isNumberInteger = Pattern.matches("^\\d*$", numberOfQuestions.getText());
-            if(time.getText().equals("") || examTypeList.getSelectedItem().equals("") || numberOfQuestions.getText().equals("")) {
+            if (time.getText().equals("") || examTypeList.getSelectedItem().equals("") || numberOfQuestions.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Please be careful with your selection");
                 setCreateExamPanel(controller);
-            }
-            else if(!isTimeInteger) {
+            } else if (!isTimeInteger) {
                 JOptionPane.showMessageDialog(null, "You should enter a positive number for exam time");
                 setCreateExamPanel(controller);
-            }
-            else if(!isNumberInteger) {
+            } else if (!isNumberInteger) {
                 JOptionPane.showMessageDialog(null, "You should enter a positive number for number of questions");
                 setCreateExamPanel(controller);
-            }
-            else {
-                System.out.println("Time entered: " + time.getText());
-                System.out.println("Exam type entered: " + examTypeList.getSelectedItem());
-                System.out.println("Number of questions: " + numberOfQuestions.getText());
+            } else {
+                String timeEntered = time.getText();
+                String examTypeSelected = (String)examTypeList.getSelectedItem();
+                String numberOfQuestionsEntered = numberOfQuestions.getText();
             }
         }
         this.revalidate();
