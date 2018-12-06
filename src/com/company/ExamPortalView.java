@@ -21,6 +21,8 @@ public class ExamPortalView extends JFrame {
     private JPanel instructorPanel;
     private static int questionCounter = 0;
     private static ArrayList<Question> questions = new ArrayList<Question>();
+    private static JComboBox answerBox = null;
+
 
     public ExamPortalView(ExamPortalController controller) {
         this.setVisible(true);
@@ -29,42 +31,6 @@ public class ExamPortalView extends JFrame {
         this.setLocationRelativeTo(null);
         this.revalidate();
         this.repaint();
-    }
-
-    private void instructorPanel(ExamPortalController controller) {
-        instructorPanel = new JPanel(new BorderLayout());
-        instructorPanel.setSize(850, 400);
-        setInstructorPanel(instructorPanel, controller);
-        this.setSize(instructorPanel.getSize());
-        this.add(instructorPanel);
-    }
-
-    private void setInstructorPanel(JPanel instructorPanel, ExamPortalController controller) {
-        JPanel upperPanel = new JPanel();
-        upperPanel.setLayout(new GridLayout(1, 4));
-        instructorPanel.add(upperPanel, BorderLayout.NORTH);
-        JButton createExam = new JButton("Create Exam");
-        createExam.setFont(TEXT_FONT_BOLD);
-        upperPanel.add(createExam);
-        createExamButtonActionListener(createExam, controller);
-        JButton viewScores = new JButton("View Scores");
-        viewScores.setFont(TEXT_FONT_BOLD);
-        upperPanel.add(viewScores);
-        JButton changePassword = new JButton("Change Password");
-        changePassword.setFont(TEXT_FONT_BOLD);
-        upperPanel.add(changePassword);
-        JButton viewMessage = new JButton("View Message");
-        viewMessage.setFont(TEXT_FONT_BOLD);
-        upperPanel.add(viewMessage);
-    }
-
-    private void createExamButtonActionListener(JButton instructorLogin, ExamPortalController controller) {
-        instructorLogin.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                controller.createExamButtonClicked();
-            }
-        });
     }
 
     private void loginPanel(ExamPortalController controller) {
@@ -131,19 +97,65 @@ public class ExamPortalView extends JFrame {
     }
 
     private void instructorLoginButtonActionListener(JButton instructorLogin, ExamPortalController controller) {
-        instructorLogin.addMouseListener(new MouseAdapter() {
+        instructorLogin.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                controller.instructorLoginButtonClicked();
+            public void actionPerformed(ActionEvent e) {
+                setInstructorPanel(controller);
             }
         });
     }
 
     private void registerButtonActionListener(JButton register, ExamPortalController controller) {
-        register.addMouseListener(new MouseAdapter() {
+        register.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                controller.registerButtonClicked();
+            public void actionPerformed(ActionEvent e) {
+                setRegisterPanel(controller);
+            }
+        });
+    }
+
+    private void instructorPanel(ExamPortalController controller) {
+        instructorPanel = new JPanel(new BorderLayout());
+        instructorPanel.setSize(1000, 500);
+        setInstructorPanel(instructorPanel, controller);
+        this.setSize(instructorPanel.getSize());
+        this.add(instructorPanel);
+        this.setLocationRelativeTo(null);
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void setInstructorPanel(JPanel instructorPanel, ExamPortalController controller) {
+        JPanel upperPanel = new JPanel();
+        upperPanel.setLayout(new GridLayout(1, 4));
+        instructorPanel.add(upperPanel, BorderLayout.NORTH);
+        setInstructorPanelButtons(controller, upperPanel);
+    }
+
+    private void setInstructorPanelButtons(ExamPortalController controller, JPanel upperPanel) {
+        JButton createExam = new JButton("Create Exam");
+        createExam.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(createExam);
+        createExamButtonActionListener(createExam, controller);
+        JButton viewScores = new JButton("View Scores");
+        viewScores.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(viewScores);
+        JButton changePassword = new JButton("Change Password");
+        changePassword.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(changePassword);
+        JButton viewMessage = new JButton("View Message");
+        viewMessage.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(viewMessage);
+        JButton logOut = new JButton("Log Out");
+        logOut.setFont(TEXT_FONT_BOLD);
+        upperPanel.add(logOut);
+    }
+
+    private void createExamButtonActionListener(JButton createExam, ExamPortalController controller) {
+        createExam.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setCreateExamPanel(controller);
             }
         });
     }
@@ -350,7 +362,7 @@ public class ExamPortalView extends JFrame {
         GBC.gridy++;
     }
 
-    protected void setRegisterPanel(ExamPortalController controller) {
+    private void setRegisterPanel(ExamPortalController controller) {
         this.getContentPane().removeAll();
         registerPanel(controller);
         this.revalidate();
@@ -362,14 +374,14 @@ public class ExamPortalView extends JFrame {
         loginPanel(controller);
     }
 
-    public void setInstructorPanel(ExamPortalController controller) {
+    private void setInstructorPanel(ExamPortalController controller) {
         this.getContentPane().removeAll();
         instructorPanel(controller);
         this.revalidate();
         this.repaint();
     }
 
-    public void setCreateExamPanel(ExamPortalController controller) {
+    private void setCreateExamPanel(ExamPortalController controller) {
         JTextField time = new JTextField(5);
         time.setText("");
 
@@ -409,13 +421,13 @@ public class ExamPortalView extends JFrame {
                 setCreateExamPanel(controller);
             } else {
                 String timeEntered = time.getText();
-                String examTypeSelected = (String)examTypeList.getSelectedItem();
+                String examTypeSelected = (String) examTypeList.getSelectedItem();
                 String numberOfQuestionsEntered = numberOfQuestions.getText();
                 JPanel questionPanel = new JPanel();
                 JPanel southPanel = new JPanel();
-                instructorPanel.add(questionPanel,BorderLayout.CENTER);
+                instructorPanel.add(questionPanel, BorderLayout.CENTER);
                 instructorPanel.add(southPanel, BorderLayout.SOUTH);
-                southPanel.setLayout(new GridLayout(1,3));
+                southPanel.setLayout(new GridLayout(1, 3));
                 JButton previousQuestion = new JButton("Previous");
                 JButton nextQuestion = new JButton("Next");
                 JButton addQuestion = new JButton("Add This Question");
@@ -428,16 +440,25 @@ public class ExamPortalView extends JFrame {
                 questionPanel.add(questionField);
                 questionPanel.add(new JLabel("Answer: "));
                 questionPanel.add(Box.createVerticalStrut(15));
-                JTextField answerField = new JTextField(15);
-                questionPanel.add(answerField);
+                if (examTypeSelected.equals("T/F")) {
+                    String[] answers = {"", "T", "F"};
+                    answerBox = new JComboBox(answers);
+                }
+                if (examTypeSelected.equals("Multiple") || examTypeSelected.equals("Test")) {
+                    String[] answers = {"", "A", "B", "C", "D", "E"};
+                    answerBox = new JComboBox(answers);
+                }
+                questionPanel.add(answerBox);
                 addQuestion.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String questionText = questionField.getText();
-                        String answerText = answerField.getText();
+                        String answerText = (String) answerBox.getSelectedItem();
                         Question question = new Question(questionText, answerText, examTypeSelected);
                         questions.add(question);
-                        System.out.println("Q: " + questionText + " A: " + answerText + " Type: " + examTypeSelected);
+                        System.out.println(question);
+                        questionField.setText("");
+                        answerBox.removeAllItems();
                     }
                 });
             }

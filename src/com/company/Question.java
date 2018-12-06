@@ -11,4 +11,8 @@ public class Question {
         this.type = type;
     }
 
+    public String toString() {
+        return "Question text: " + description + ", answer:" + answer + ", type:" + type;
+    }
+
 }

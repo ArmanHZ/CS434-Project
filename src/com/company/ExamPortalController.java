@@ -12,10 +12,6 @@ public class ExamPortalController {
         connection = new SQLConnection();
     }
 
-    public void registerButtonClicked() {
-        view.setRegisterPanel(this);
-    }
-
     public void studentRegisterButtonClicked(String name, String username, String password,
                                              String rePassword, String email, String department) {
 
@@ -34,9 +30,5 @@ public class ExamPortalController {
         }
         return false;
     }
-
-    public void instructorLoginButtonClicked() { view.setInstructorPanel(this); }
-    public void createExamButtonClicked() { view.setCreateExamPanel(this); }
-
 
 }
