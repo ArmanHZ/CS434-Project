@@ -17,6 +17,7 @@ public class ExamPortalView extends JFrame {
     private static final Dimension TEXT_FIELD_DIM = new Dimension(180, 30);
 
     private static final int INSTRUCTOR_PASS = 53894;
+    private JPanel instructorPanel;
 
     public ExamPortalView(ExamPortalController controller) {
         this.setVisible(true);
@@ -28,7 +29,7 @@ public class ExamPortalView extends JFrame {
     }
 
     private void instructorPanel(ExamPortalController controller) {
-        JPanel instructorPanel = new JPanel();
+        instructorPanel = new JPanel();
         instructorPanel.setSize(850, 400);
         setInstructorPanel(instructorPanel, controller);
         this.setSize(instructorPanel.getSize());
@@ -407,6 +408,10 @@ public class ExamPortalView extends JFrame {
                 String timeEntered = time.getText();
                 String examTypeSelected = (String)examTypeList.getSelectedItem();
                 String numberOfQuestionsEntered = numberOfQuestions.getText();
+                JPanel questionPanel = new JPanel();
+                questionPanel.add(new JButton("Test"));
+                instructorPanel.add(questionPanel,BorderLayout.CENTER);
+
             }
         }
         this.revalidate();
