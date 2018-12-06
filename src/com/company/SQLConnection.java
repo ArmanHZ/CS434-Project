@@ -12,6 +12,7 @@ public class SQLConnection {
     SQLConnection() {
         connect();
 //        disconnect();
+        //hey!
     }
 
     private void connect() {
