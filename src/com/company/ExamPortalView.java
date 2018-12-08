@@ -15,6 +15,9 @@ public class ExamPortalView extends JFrame {
     private static final Font TEXT_FONT_BOLD = new Font("Banschrift", Font.BOLD, 18);
     private static final Dimension TEXT_FIELD_DIM = new Dimension(180, 30);
 
+    private JTextField usernameField;
+    private JTextField passwordField;
+
     private static final int INSTRUCTOR_PASS = 53894;
     private JPanel instructorPanel;
     private static int questionCounter = 0;
@@ -58,9 +61,9 @@ public class ExamPortalView extends JFrame {
         usernameLabel.setFont(TEXT_FONT_PLAIN);
         JLabel passwordLabel = new JLabel("Password: ");
         passwordLabel.setFont(TEXT_FONT_PLAIN);
-        JTextField usernameField = new JTextField();
+        usernameField = new JTextField();
         usernameField.setPreferredSize(TEXT_FIELD_DIM);
-        JTextField passwordField = new JPasswordField();
+        passwordField = new JPasswordField();
         passwordField.setPreferredSize(TEXT_FIELD_DIM);
         GBC.gridwidth = 1;
         GBC.gridy = 1;
@@ -76,6 +79,7 @@ public class ExamPortalView extends JFrame {
 
     private void setLoginPanelButtons(JPanel panel, ExamPortalController controller) {
         JButton studentLogin = new JButton("Student Login");
+        studentLogin.addActionListener(e -> controller.studentLogin(usernameField.getText(), passwordField.getText()));
         studentLogin.setFont(TEXT_FONT_BOLD);
         JButton instructorLogin = new JButton("Instructor Login");
         instructorLogin.setFont(TEXT_FONT_BOLD);

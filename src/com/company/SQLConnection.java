@@ -77,4 +77,21 @@ public class SQLConnection {
         return false;
     }
 
+    public boolean studentLoginCheck(String username, String password) {
+        if (doesUserExist(username, "sUsername")) {
+            try {
+                String query = "SELECT S.sPassword FROM Students S WHERE S.sUsername = \"" + username + "\";";
+                String userPass = "";
+                Statement statement = CONNECTION.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+                if (resultSet.next())
+                    userPass = resultSet.getString("sPassword");
+                return userPass.equals(password);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
 }

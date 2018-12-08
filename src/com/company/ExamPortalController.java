@@ -31,4 +31,13 @@ public class ExamPortalController {
         return false;
     }
 
+    public void studentLogin(String username, String password) {
+        if (connection.studentLoginCheck(username, password)) {
+            System.out.println("Valid User");
+            // TODO studentPanel where the Student sees the exams and etc.
+        } else {
+            JOptionPane.showMessageDialog(null, "Username or Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 }
