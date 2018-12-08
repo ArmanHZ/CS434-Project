@@ -5,11 +5,12 @@ import java.sql.*;
 
 public class SQLConnection {
 
-    private static Connection CONNECTION = null;
+    private static SQLConnection SQL_CONNECTION = new SQLConnection();
+    private static Connection CONNECTION;
     private static final String STUDENT_USERNAME_COLUMN_LABEL = "sUsername";
     private static final String INSTRUCTOR_USERNAME_COLUMN_LABEL = "iUsername";
 
-    SQLConnection() {
+    private SQLConnection() {
         connect();
     }
 
@@ -29,6 +30,10 @@ public class SQLConnection {
             e.printStackTrace();
             System.out.println("Could not connect to DB");
         }
+    }
+
+    public static SQLConnection getInstance() {
+        return SQL_CONNECTION;
     }
 
     private void disconnect() {

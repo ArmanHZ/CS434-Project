@@ -9,7 +9,7 @@ public class ExamPortalController {
 
     public ExamPortalController() {
         view = new ExamPortalView(this);
-        connection = new SQLConnection();
+        connection = SQLConnection.getInstance();
     }
 
     public void studentRegisterButtonClicked(String name, String username, String password,
