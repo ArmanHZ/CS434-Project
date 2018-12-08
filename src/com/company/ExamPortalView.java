@@ -40,6 +40,7 @@ public class ExamPortalView extends JFrame {
         loginPanel.setLayout(new BorderLayout());
         setLoginPanelLayout(loginPanel, controller);
         this.setSize(loginPanel.getSize());
+        this.setLocationRelativeTo(null);
         this.add(loginPanel);
     }
 
@@ -99,21 +100,11 @@ public class ExamPortalView extends JFrame {
     }
 
     private void instructorLoginButtonActionListener(JButton instructorLogin, ExamPortalController controller) {
-        instructorLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setInstructorPanel(controller);
-            }
-        });
+        instructorLogin.addActionListener(e -> setInstructorPanel(controller));
     }
 
     private void registerButtonActionListener(JButton register, ExamPortalController controller) {
-        register.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setRegisterPanel(controller);
-            }
-        });
+        register.addActionListener(e -> setRegisterPanel(controller));
     }
 
     private void instructorPanel(ExamPortalController controller) {
@@ -149,6 +140,7 @@ public class ExamPortalView extends JFrame {
         viewMessage.setFont(TEXT_FONT_BOLD);
         upperPanel.add(viewMessage);
         JButton logOut = new JButton("Log Out");
+        logOut.addActionListener(e -> resetLoginPanel(controller));
         logOut.setFont(TEXT_FONT_BOLD);
         upperPanel.add(logOut);
     }
@@ -165,7 +157,7 @@ public class ExamPortalView extends JFrame {
     private void registerPanel(ExamPortalController controller) {
         JTabbedPane userSelection = new JTabbedPane();
         JPanel studentRegisterPanel = studentRegisterPanel(controller);
-        JPanel instructorRegisterPanel = instructorRegisterPanel();
+        JPanel instructorRegisterPanel = instructorRegisterPanel(controller);
         userSelection.add("Student", studentRegisterPanel);
         userSelection.add("Instructor", instructorRegisterPanel);
         this.add(userSelection);
@@ -250,29 +242,30 @@ public class ExamPortalView extends JFrame {
         northPanel.add(departmentBox, GBC);
         GBC.gridy++;
         JButton registerButton = new JButton("Register");
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-                String rePassword = rePasswordField.getText();
-                String email = emailField.getText();
-                String department = departmentBox.getSelectedItem().toString();
-                if (!name.equals("") && !username.equals("") && !password.equals("") && !rePassword.equals("") && !email.equals(""))
-                    controller.studentRegisterButtonClicked(name, username, password, rePassword, email, department);
-                else
-                    JOptionPane.showMessageDialog(northPanel, "One or more fields are empty!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        registerButton.addActionListener(e -> {
+            String name = nameField.getText();
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            String rePassword = rePasswordField.getText();
+            String email = emailField.getText();
+            String department = departmentBox.getSelectedItem().toString();
+            if (!name.equals("") && !username.equals("") && !password.equals("") && !rePassword.equals("") && !email.equals(""))
+                controller.studentRegisterButtonClicked(name, username, password, rePassword, email, department);
+            else
+                JOptionPane.showMessageDialog(northPanel, "One or more fields are empty!", "Error", JOptionPane.ERROR_MESSAGE);
         });
         registerButton.setFont(TEXT_FONT_BOLD);
-        GBC.gridwidth = 2;
         GBC.gridx = 0;
         northPanel.add(registerButton, GBC);
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> resetLoginPanel(controller));
+        backButton.setFont(TEXT_FONT_BOLD);
+        GBC.gridx = 1;
+        northPanel.add(backButton, GBC);
     }
 
 
-    private JPanel instructorRegisterPanel() {
+    private JPanel instructorRegisterPanel(ExamPortalController controller) {
         JPanel instructorRegisterPanel = new JPanel();
         this.setSize(new Dimension(500, 500));
         instructorRegisterPanel.setLayout(new BorderLayout());
@@ -285,12 +278,8 @@ public class ExamPortalView extends JFrame {
         GBC.gridy = 0;
         northPanel.add(studentRegisterLabel, GBC);
         setInstructorRegisterPanelLabels(northPanel);
-        setInstructorRegisterPanelFields(northPanel);
-        JButton registerButton = new JButton("Register");
-        registerButton.setFont(TEXT_FONT_BOLD);
-        GBC.gridwidth = 2;
-        GBC.gridx = 0;
-        northPanel.add(registerButton, GBC);
+        setInstructorRegisterPanelFields(northPanel, controller);
+
         return instructorRegisterPanel;
     }
 
@@ -326,7 +315,7 @@ public class ExamPortalView extends JFrame {
         northPanel.add(department, GBC);
     }
 
-    private void setInstructorRegisterPanelFields(JPanel northPanel) {
+    private void setInstructorRegisterPanelFields(JPanel northPanel, ExamPortalController controller) {
         GBC.gridy = 1;
         GBC.gridx = 1;
         JTextField nameField = new JTextField();
@@ -362,11 +351,21 @@ public class ExamPortalView extends JFrame {
         departmentBox.setFont(TEXT_FONT_PLAIN);
         northPanel.add(departmentBox, GBC);
         GBC.gridy++;
+        JButton registerButton = new JButton("Register");
+        registerButton.setFont(TEXT_FONT_BOLD);
+        GBC.gridx = 0;
+        northPanel.add(registerButton, GBC);
+        JButton backButton = new JButton("Back");
+        backButton.setFont(TEXT_FONT_BOLD);
+        backButton.addActionListener(e -> resetLoginPanel(controller));
+        GBC.gridx = 1;
+        northPanel.add(backButton, GBC);
     }
 
     private void setRegisterPanel(ExamPortalController controller) {
         this.getContentPane().removeAll();
         registerPanel(controller);
+        this.setLocationRelativeTo(null);
         this.revalidate();
         this.repaint();
     }
