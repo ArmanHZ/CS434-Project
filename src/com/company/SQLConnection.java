@@ -21,7 +21,7 @@ public class SQLConnection {
             e.printStackTrace();
         }
 
-        String url = ("jdbc:mysql://localhost:3306/cs434?user=root&password=armanADMIN123");
+        String url = ("jdbc:mysql://localhost:3306/cs434?useSSL=false&user=root&password=armanADMIN123");
         try {
             CONNECTION = DriverManager.getConnection(url);
             System.out.println("Connected");
