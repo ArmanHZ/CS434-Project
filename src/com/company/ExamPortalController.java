@@ -1,6 +1,7 @@
 package com.company;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class ExamPortalController {
 
@@ -38,6 +39,15 @@ public class ExamPortalController {
         } else {
             JOptionPane.showMessageDialog(null, "Username or Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void viewStudentScores(JPanel middlePanel) {
+        middlePanel.removeAll();
+        JTable studentScores = connection.getStudentScoresTable();
+        JScrollPane scrollPane = new JScrollPane(studentScores);
+        middlePanel.add(scrollPane, BorderLayout.CENTER);
+        middlePanel.revalidate();
+        middlePanel.repaint();
     }
 
 }

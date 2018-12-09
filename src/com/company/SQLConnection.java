@@ -1,6 +1,10 @@
 package com.company;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import java.awt.*;
 import java.sql.*;
 
 public class SQLConnection {
@@ -97,6 +101,50 @@ public class SQLConnection {
             }
         }
         return false;
+    }
+
+    public JTable getStudentScoresTable() {
+        int rowLimit = getNumStudents();
+        int columnLimit = 2;
+        String[][] data = new String[rowLimit][columnLimit];
+        String query = "SELECT S.sLatestGrade, S.sName FROM students S";
+        try {
+            Statement statement = CONNECTION.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            int rowCount = 0;
+            while (resultSet.next()) {
+                data[rowCount][0] = resultSet.getString("sName");
+                data[rowCount][1] = resultSet.getString("sLatestGrade");
+                rowCount++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return createScoresTable(data);
+    }
+
+    private int getNumStudents() {
+        int counter = 0;
+        String query = "SELECT S.sUsername FROM students S";
+        try {
+            Statement statement = CONNECTION.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+                counter++;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return counter;
+    }
+
+    private JTable createScoresTable(String[][] data) {
+        String[] columnNames = { "Student Names", "Latest Grade" };
+        DefaultTableModel defaultTableModel = new DefaultTableModel(data, columnNames);
+        defaultTableModel.setColumnIdentifiers(columnNames);
+        JTable table = new JTable(defaultTableModel);
+        table.setPreferredScrollableViewportSize(new Dimension(450,63));
+        table.setFillsViewportHeight(true);
+        return table;
     }
 
 }

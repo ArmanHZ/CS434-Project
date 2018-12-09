@@ -17,6 +17,7 @@ public class ExamPortalView extends JFrame {
 
     private JTextField usernameField;
     private JTextField passwordField;
+    private static JPanel instructorQuestionPanel = new JPanel();
 
     private static final int INSTRUCTOR_PASS = 53894;
     private JPanel instructorPanel;
@@ -118,19 +119,25 @@ public class ExamPortalView extends JFrame {
         this.repaint();
     }
 
+    // Must be defined here
     private void setInstructorPanel(JPanel instructorPanel, ExamPortalController controller) {
         JPanel upperPanel = new JPanel();
+        JPanel middlePanel = new JPanel(new BorderLayout());
+        JPanel bottomPanel = new JPanel();
         upperPanel.setLayout(new GridLayout(1, 4));
         instructorPanel.add(upperPanel, BorderLayout.NORTH);
-        setInstructorPanelButtons(controller, upperPanel);
+        instructorPanel.add(middlePanel, BorderLayout.CENTER);
+        instructorPanel.add(bottomPanel, BorderLayout.SOUTH);
+        setInstructorPanelButtons(controller, upperPanel, middlePanel);
     }
 
-    private void setInstructorPanelButtons(ExamPortalController controller, JPanel upperPanel) {
+    private void setInstructorPanelButtons(ExamPortalController controller, JPanel upperPanel, JPanel middlePanel) {
         JButton createExam = new JButton("Create Exam");
         createExam.setFont(TEXT_FONT_BOLD);
         upperPanel.add(createExam);
         createExamButtonActionListener(createExam, controller);
         JButton viewScores = new JButton("View Scores");
+        viewScores.addActionListener(e -> controller.viewStudentScores(middlePanel));  // CHECK
         viewScores.setFont(TEXT_FONT_BOLD);
         upperPanel.add(viewScores);
         JButton changePassword = new JButton("Change Password");
@@ -149,7 +156,7 @@ public class ExamPortalView extends JFrame {
         createExam.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setCreateExamPanel(controller);
+                //setCreateExamPanel(controller);
             }
         });
     }
@@ -382,7 +389,7 @@ public class ExamPortalView extends JFrame {
         this.repaint();
     }
 
-    private void setCreateExamPanel(ExamPortalController controller) {
+    /*private void setCreateExamPanel(ExamPortalController controller) {
         JTextField time = new JTextField(5);
         time.setText("");
 
@@ -424,9 +431,9 @@ public class ExamPortalView extends JFrame {
                 String timeEntered = time.getText();
                 String examTypeSelected = (String) examTypeList.getSelectedItem();
                 int numberOfQuestionsEntered = Integer.parseInt(numberOfQuestions.getText());
-                JPanel questionPanel = new JPanel();
+                //instructorQuestionPanel = new JPanel(); // TODO
                 JPanel southPanel = new JPanel();
-                instructorPanel.add(questionPanel, BorderLayout.CENTER);
+                //instructorPanel.add(instructorQuestionPanel, BorderLayout.CENTER);
                 instructorPanel.add(southPanel, BorderLayout.SOUTH);
                 southPanel.setLayout(new GridLayout(1, 3));
                 JButton previousQuestion = new JButton("Previous");
@@ -436,12 +443,12 @@ public class ExamPortalView extends JFrame {
                 southPanel.add(nextQuestion);
                 southPanel.add(addQuestion);
                 JLabel questionNumberLabel = new JLabel("Question" + (questionCounter + 1) + ":");
-                questionPanel.add(questionNumberLabel);
-                questionPanel.add(Box.createVerticalStrut(15));
+                instructorQuestionPanel.add(questionNumberLabel);
+                instructorQuestionPanel.add(Box.createVerticalStrut(15));
                 JTextField questionField = new JTextField(15);
-                questionPanel.add(questionField);
-                questionPanel.add(new JLabel("Answer: "));
-                questionPanel.add(Box.createVerticalStrut(15));
+                instructorQuestionPanel.add(questionField);
+                instructorQuestionPanel.add(new JLabel("Answer: "));
+                instructorQuestionPanel.add(Box.createVerticalStrut(15));
                 if (examTypeSelected.equals("T/F")) {
                     String[] answers = {"", "T", "F"};
                     answerBox = new JComboBox(answers);
@@ -450,7 +457,7 @@ public class ExamPortalView extends JFrame {
                     String[] answers = {"", "A", "B", "C", "D", "E"};
                     answerBox = new JComboBox(answers);
                 }
-                questionPanel.add(answerBox);
+                instructorQuestionPanel.add(answerBox);
 
                 for (int i = 0; i < numberOfQuestionsEntered; i++) {
                     questions.add(new Question("", "", examTypeSelected));
@@ -474,11 +481,11 @@ public class ExamPortalView extends JFrame {
                             questionField.setEnabled(false);
                             answerBox.setEnabled(false);
                             JPanel uploadPanel = new JPanel();
-                            questionPanel.add(uploadPanel, BorderLayout.CENTER);
+                            instructorQuestionPanel.add(uploadPanel, BorderLayout.CENTER);
                             JButton uploadExam = new JButton("Upload Exam");
                             uploadPanel.add(uploadExam);
-                            questionPanel.revalidate();
-                            questionPanel.repaint();
+                            instructorQuestionPanel.revalidate();
+                            instructorQuestionPanel.repaint();
                         }
                     }
                 });
@@ -510,5 +517,5 @@ public class ExamPortalView extends JFrame {
         }
         this.revalidate();
         this.repaint();
-    }
+    }   */
 }
