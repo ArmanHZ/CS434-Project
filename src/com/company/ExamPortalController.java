@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ExamPortalController {
 
@@ -14,8 +13,10 @@ public class ExamPortalController {
     private ButtonGroup buttonGroup;
     private JSpinner timeLimit;
     private JSpinner numQuestion;
-    private JTextField questionField;
+    private JTextArea questionArea;
     private JComboBox trueFalseOption;
+    private JComboBox multipleChoiceOption;
+    private ArrayList<JCheckBox> testOptions;
     public static List<List<Question>> exams = new ArrayList<>();
     private int pageCounter = 0;
 
@@ -83,11 +84,12 @@ public class ExamPortalController {
                 createTrueFalseQuestionPage(middlePanel);
                 break;
             case "multi":
-                createMultiQuestionPage();
+                createMultiQuestionPage(middlePanel);
+                break;
+            case "test":
+                createTestQuestionPage(middlePanel);
                 break;
             default:
-                createTestQuestionPage();
-                break;
         }
     }
 
@@ -136,31 +138,64 @@ public class ExamPortalController {
 
     private void createTrueFalseQuestionPage(JPanel middlePanel) {
         JLabel question = new JLabel("Question" + (pageCounter + 1) + ": ");
-        questionField = new JTextField(15);
+        questionArea = new JTextArea();
+        questionArea.setPreferredSize(new Dimension(300,100));
         JLabel answer = new JLabel("Answer: ");
         String [] options = { "T", "F" };
         trueFalseOption = new JComboBox(options);
         middlePanel.add(question);
-        middlePanel.add(questionField);
+        middlePanel.add(questionArea);
         middlePanel.add(answer);
         middlePanel.add(trueFalseOption);
     }
 
-    private void createMultiQuestionPage() {
-
+    private void createMultiQuestionPage(JPanel middlePanel) {
+        JLabel question = new JLabel("Question" + (pageCounter + 1) + ": ");
+        questionArea = new JTextArea();
+        questionArea.setPreferredSize(new Dimension(300,100));
+        JLabel answer = new JLabel("Answer: ");
+        String[] options = {"A", "B", "C", "D", "E"};
+        multipleChoiceOption = new JComboBox(options);
+        middlePanel.add(question);
+        middlePanel.add(questionArea);
+        middlePanel.add(answer);
+        middlePanel.add(multipleChoiceOption);
     }
 
-    private void createTestQuestionPage() {
-
+    private void createTestQuestionPage(JPanel middlePanel) {
+        JLabel question = new JLabel("Question" + (pageCounter + 1) + ": ");
+        questionArea = new JTextArea();
+        questionArea.setPreferredSize(new Dimension(300,100));
+        JLabel answer = new JLabel("Answer: ");
+        testOptions = new ArrayList<>();
+        JCheckBox firstOption = new JCheckBox("A");
+        JCheckBox secondOption = new JCheckBox("B");
+        JCheckBox thirdOption = new JCheckBox("C");
+        JCheckBox fourthOption = new JCheckBox("D");
+        JCheckBox fifthOption = new JCheckBox("E");
+        testOptions.add(firstOption);
+        testOptions.add(secondOption);
+        testOptions.add(thirdOption);
+        testOptions.add(fourthOption);
+        testOptions.add(fifthOption);
+        middlePanel.add(question);
+        middlePanel.add(questionArea);
+        middlePanel.add(answer);
+        middlePanel.add(firstOption);
+        middlePanel.add(secondOption);
+        middlePanel.add(thirdOption);
+        middlePanel.add(fourthOption);
+        middlePanel.add(fifthOption);
     }
 
     private void createExamBottomButtons(JPanel middlePanel, JPanel bottomPanel) {
         bottomPanel.removeAll();
-        JButton previous = new JButton("Previous");
         JButton next = new JButton("Next");
         next.addActionListener(e -> nextQuestion(middlePanel));
         JButton saveQuestion = new JButton("Save Question");
         saveQuestion.addActionListener(e -> saveQuestion());
+        JButton previous = new JButton("Previous");
+        previous.addActionListener(e -> previousQuestion(middlePanel));
         bottomPanel.add(previous);
         bottomPanel.add(next);
         bottomPanel.add(saveQuestion);
@@ -169,12 +204,23 @@ public class ExamPortalController {
     }
 
     private void saveQuestion() {
-        String description = questionField.getText();
-        String answer = Objects.requireNonNull(trueFalseOption.getSelectedItem()).toString();
-        String type = buttonGroup.getSelection().getActionCommand();
+        String description = questionArea.getText();
+        String type = getExamType();
+        String answer = "";
+        if (getExamType().equals("TF")) {
+            answer = (trueFalseOption.getSelectedItem()).toString();
+        }
+        else if (getExamType().equals("multi")) {
+            answer = (multipleChoiceOption.getSelectedItem().toString());
+        }
+        else {
+            for(int i=0;i<testOptions.size();i++) {
+                if(testOptions.get(i).isSelected()) answer += testOptions.get(i).getText();
+            }
+        }
         Question question = new Question(description, answer, type);
         questions.add(question);
-        System.out.println(pageCounter + " " + question);
+        System.out.println((pageCounter+1) + " " + question);
     }
 
     private void nextQuestion(JPanel middlePanel) {
@@ -183,6 +229,19 @@ public class ExamPortalController {
         createExam(middlePanel);
         middlePanel.revalidate();
         middlePanel.repaint();
+    }
+
+    private void previousQuestion(JPanel middlePanel) {
+        if (pageCounter>0) {
+            pageCounter--;
+            middlePanel.removeAll();
+            createExam(middlePanel);
+            Question previousQuestion = questions.get(pageCounter);
+            System.out.println(previousQuestion);
+            questionArea.setText(previousQuestion.getDescription());
+            middlePanel.revalidate();
+            middlePanel.repaint();
+        }
     }
 
     private void saveQuestionsToExams(List<Question> questions) {
