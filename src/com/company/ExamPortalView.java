@@ -24,6 +24,7 @@ public class ExamPortalView extends JFrame {
 
 
     public ExamPortalView(ExamPortalController controller) {
+        this.setTitle("Exam Portal");
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         loginPanel(controller);
@@ -42,17 +43,17 @@ public class ExamPortalView extends JFrame {
         this.add(loginPanel);
     }
 
-    private void setLoginPanelLayout(JPanel panel, ExamPortalController controller) {
+    private void setLoginPanelLayout(JPanel loginPanel, ExamPortalController controller) {
         GBC.gridx = GBC.gridy = 0;
-        panel.setLayout(new GridBagLayout());
+        loginPanel.setLayout(new GridBagLayout());
         JLabel loginLabel = new JLabel("Welcome to the Login page");
         loginLabel.setFont(HEADER_FONT);
         GBC.fill = GridBagConstraints.VERTICAL;
         GBC.insets = new Insets(5, 5, 5, 5);
         GBC.gridwidth = 2;
-        panel.add(loginLabel, GBC);
-        setLoginPanelTextFields(panel);
-        setLoginPanelButtons(panel, controller);
+        loginPanel.add(loginLabel, GBC);
+        setLoginPanelTextFields(loginPanel);
+        setLoginPanelButtons(loginPanel, controller);
     }
 
     private void setLoginPanelTextFields(JPanel panel) {
@@ -76,9 +77,9 @@ public class ExamPortalView extends JFrame {
         panel.add(passwordField, GBC);
     }
 
-    private void setLoginPanelButtons(JPanel panel, ExamPortalController controller) {
+    private void setLoginPanelButtons(JPanel loginPanel, ExamPortalController controller) {
         JButton studentLogin = new JButton("Student Login");
-        studentLogin.addActionListener(e -> controller.studentLogin(usernameField.getText(), passwordField.getText()));
+        studentLogin.addActionListener(e -> controller.studentLogin(usernameField.getText(), passwordField.getText(), loginPanel));
         studentLogin.setFont(TEXT_FONT_BOLD);
         JButton instructorLogin = new JButton("Instructor Login");
         instructorLogin.setFont(TEXT_FONT_BOLD);
@@ -88,13 +89,23 @@ public class ExamPortalView extends JFrame {
         registerButtonActionListener(register, controller);
         GBC.gridx = 0;
         GBC.gridy = 3;
-        panel.add(studentLogin, GBC);
+        loginPanel.add(studentLogin, GBC);
         GBC.gridx = 1;
-        panel.add(instructorLogin, GBC);
+        loginPanel.add(instructorLogin, GBC);
         GBC.gridx = 0;
         GBC.gridy = 4;
         GBC.gridwidth = 2;
-        panel.add(register, GBC);
+        loginPanel.add(register, GBC);
+    }
+
+    // Student Panel after Login
+    public void setStudentPanel(JPanel studentPanel) {
+        this.getContentPane().removeAll();
+        studentPanel.removeAll();
+        this.add(studentPanel);
+        studentPanel.add(new JButton("XDDDDDDDD"));
+        this.revalidate();
+        this.repaint();
     }
 
     private void instructorLoginButtonActionListener(JButton instructorLogin, ExamPortalController controller) {
