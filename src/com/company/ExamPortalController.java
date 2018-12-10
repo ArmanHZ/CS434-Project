@@ -204,31 +204,37 @@ public class ExamPortalController {
     }
 
     private void saveQuestion() {
-        String description = questionArea.getText();
-        String type = getExamType();
-        String answer = "";
-        if (getExamType().equals("TF")) {
-            answer = (trueFalseOption.getSelectedItem()).toString();
-        }
-        else if (getExamType().equals("multi")) {
-            answer = (multipleChoiceOption.getSelectedItem().toString());
-        }
-        else {
-            for(int i=0;i<testOptions.size();i++) {
-                if(testOptions.get(i).isSelected()) answer += testOptions.get(i).getText();
+        if(!questionArea.getText().equals("")) {
+            String description = questionArea.getText();
+            String type = getExamType();
+            String answer = "";
+            if (getExamType().equals("TF")) {
+                answer = (trueFalseOption.getSelectedItem()).toString();
+            } else if (getExamType().equals("multi")) {
+                answer = (multipleChoiceOption.getSelectedItem().toString());
+            } else {
+                for (int i = 0; i < testOptions.size(); i++) {
+                    if (testOptions.get(i).isSelected()) answer += testOptions.get(i).getText();
+                }
             }
+            Question question = new Question(description, answer, type);
+            questions.add(question);
+            System.out.println((pageCounter + 1) + " " + question);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please write your question!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        Question question = new Question(description, answer, type);
-        questions.add(question);
-        System.out.println((pageCounter+1) + " " + question);
     }
 
     private void nextQuestion(JPanel middlePanel) {
-        pageCounter++;
-        middlePanel.removeAll();
-        createExam(middlePanel);
-        middlePanel.revalidate();
-        middlePanel.repaint();
+        if(!questionArea.getText().equals("")) {
+            pageCounter++;
+            middlePanel.removeAll();
+            createExam(middlePanel);
+            middlePanel.revalidate();
+            middlePanel.repaint();
+        } else {
+            JOptionPane.showMessageDialog(null, "Please write your question!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void previousQuestion(JPanel middlePanel) {
