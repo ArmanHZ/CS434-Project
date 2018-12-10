@@ -1,10 +1,7 @@
 package com.company;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 import javax.swing.*;
 
 public class ExamPortalView extends JFrame {
@@ -119,25 +116,24 @@ public class ExamPortalView extends JFrame {
         this.repaint();
     }
 
-    // Must be defined here
     private void setInstructorPanel(JPanel instructorPanel, ExamPortalController controller) {
         JPanel upperPanel = new JPanel();
-        JPanel middlePanel = new JPanel(new BorderLayout());
+        JPanel middlePanel = new JPanel();
         JPanel bottomPanel = new JPanel();
         upperPanel.setLayout(new GridLayout(1, 4));
         instructorPanel.add(upperPanel, BorderLayout.NORTH);
         instructorPanel.add(middlePanel, BorderLayout.CENTER);
         instructorPanel.add(bottomPanel, BorderLayout.SOUTH);
-        setInstructorPanelButtons(controller, upperPanel, middlePanel);
+        setInstructorPanelButtons(controller, upperPanel, middlePanel, bottomPanel);
     }
 
-    private void setInstructorPanelButtons(ExamPortalController controller, JPanel upperPanel, JPanel middlePanel) {
+    private void setInstructorPanelButtons(ExamPortalController controller, JPanel upperPanel, JPanel middlePanel, JPanel bottomPanel) {
         JButton createExam = new JButton("Create Exam");
+        createExam.addActionListener(e -> controller.createExamPanel(middlePanel, bottomPanel));
         createExam.setFont(TEXT_FONT_BOLD);
         upperPanel.add(createExam);
-        createExamButtonActionListener(createExam, controller);
         JButton viewScores = new JButton("View Scores");
-        viewScores.addActionListener(e -> controller.viewStudentScores(middlePanel));  // CHECK
+        viewScores.addActionListener(e -> controller.viewStudentScores(middlePanel, bottomPanel));
         viewScores.setFont(TEXT_FONT_BOLD);
         upperPanel.add(viewScores);
         JButton changePassword = new JButton("Change Password");
@@ -150,15 +146,6 @@ public class ExamPortalView extends JFrame {
         logOut.addActionListener(e -> resetLoginPanel(controller));
         logOut.setFont(TEXT_FONT_BOLD);
         upperPanel.add(logOut);
-    }
-
-    private void createExamButtonActionListener(JButton createExam, ExamPortalController controller) {
-        createExam.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //setCreateExamPanel(controller);
-            }
-        });
     }
 
     private void registerPanel(ExamPortalController controller) {
@@ -388,134 +375,4 @@ public class ExamPortalView extends JFrame {
         this.revalidate();
         this.repaint();
     }
-
-    /*private void setCreateExamPanel(ExamPortalController controller) {
-        JTextField time = new JTextField(5);
-        time.setText("");
-
-        String[] examTypes = {"", "Multiple", "T/F", "Test"};
-        JComboBox examTypeList = new JComboBox(examTypes);
-
-        JTextField numberOfQuestions = new JTextField(5);
-        numberOfQuestions.setText("");
-
-        JPanel panel = new JPanel();
-
-        panel.add(new JLabel("Please enter exam time (in minutes), number of questions for the exam and select exam type: "));
-        panel.add(Box.createVerticalStrut(15)); // a spacer
-        panel.add(new JLabel("Exam Time: "));
-        panel.add(time);
-        panel.add(Box.createHorizontalStrut(15)); // a spacer
-        panel.add(new JLabel("Exam Type: "));
-        panel.add(examTypeList);
-        panel.add(Box.createHorizontalStrut(15)); // a spacer
-        panel.add(new JLabel("Number of questions: "));
-        panel.add(numberOfQuestions);
-
-        int result = JOptionPane.showConfirmDialog(null, panel,
-                "Create Exam", JOptionPane.OK_CANCEL_OPTION);
-
-        if (result == JOptionPane.OK_OPTION) {
-            boolean isTimeInteger = Pattern.matches("^\\d*$", time.getText());
-            boolean isNumberInteger = Pattern.matches("^\\d*$", numberOfQuestions.getText());
-            if (time.getText().equals("") || examTypeList.getSelectedItem().equals("") || numberOfQuestions.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "Please be careful with your selection");
-                setCreateExamPanel(controller);
-            } else if (!isTimeInteger) {
-                JOptionPane.showMessageDialog(null, "You should enter a positive number for exam time");
-                setCreateExamPanel(controller);
-            } else if (!isNumberInteger) {
-                JOptionPane.showMessageDialog(null, "You should enter a positive number for number of questions");
-                setCreateExamPanel(controller);
-            } else {
-                String timeEntered = time.getText();
-                String examTypeSelected = (String) examTypeList.getSelectedItem();
-                int numberOfQuestionsEntered = Integer.parseInt(numberOfQuestions.getText());
-                //instructorQuestionPanel = new JPanel(); // TODO
-                JPanel southPanel = new JPanel();
-                //instructorPanel.add(instructorQuestionPanel, BorderLayout.CENTER);
-                instructorPanel.add(southPanel, BorderLayout.SOUTH);
-                southPanel.setLayout(new GridLayout(1, 3));
-                JButton previousQuestion = new JButton("Previous");
-                JButton nextQuestion = new JButton("Next");
-                JButton addQuestion = new JButton("Add This Question");
-                southPanel.add(previousQuestion);
-                southPanel.add(nextQuestion);
-                southPanel.add(addQuestion);
-                JLabel questionNumberLabel = new JLabel("Question" + (questionCounter + 1) + ":");
-                instructorQuestionPanel.add(questionNumberLabel);
-                instructorQuestionPanel.add(Box.createVerticalStrut(15));
-                JTextField questionField = new JTextField(15);
-                instructorQuestionPanel.add(questionField);
-                instructorQuestionPanel.add(new JLabel("Answer: "));
-                instructorQuestionPanel.add(Box.createVerticalStrut(15));
-                if (examTypeSelected.equals("T/F")) {
-                    String[] answers = {"", "T", "F"};
-                    answerBox = new JComboBox(answers);
-                }
-                if (examTypeSelected.equals("Multiple") || examTypeSelected.equals("Test")) {
-                    String[] answers = {"", "A", "B", "C", "D", "E"};
-                    answerBox = new JComboBox(answers);
-                }
-                instructorQuestionPanel.add(answerBox);
-
-                for (int i = 0; i < numberOfQuestionsEntered; i++) {
-                    questions.add(new Question("", "", examTypeSelected));
-                }
-
-                addQuestion.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (questionCounter < numberOfQuestionsEntered) {
-                            String questionText = questionField.getText();
-                            String answerText = (String) answerBox.getSelectedItem();
-                            Question question = new Question(questionText, answerText, examTypeSelected);
-                            questions.set(questionCounter, question);
-                            System.out.println(question);
-                            questionField.setText("");
-                            answerBox.setSelectedItem("");
-                            questionCounter++;
-                            questionNumberLabel.setText("Question" + (questionCounter + 1) + ":");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "You already entered " + numberOfQuestionsEntered + " questions");
-                            questionField.setEnabled(false);
-                            answerBox.setEnabled(false);
-                            JPanel uploadPanel = new JPanel();
-                            instructorQuestionPanel.add(uploadPanel, BorderLayout.CENTER);
-                            JButton uploadExam = new JButton("Upload Exam");
-                            uploadPanel.add(uploadExam);
-                            instructorQuestionPanel.revalidate();
-                            instructorQuestionPanel.repaint();
-                        }
-                    }
-                });
-                nextQuestion.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (questionCounter < numberOfQuestionsEntered) {
-                            Question nextQuestion = questions.get(questionCounter);
-                            questionField.setText(nextQuestion.getDescription());
-                            answerBox.setSelectedItem(nextQuestion.getAnswer());
-                            questionNumberLabel.setText("Question" + (questionCounter + 1) + ":");
-                        }
-                    }
-                });
-                previousQuestion.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (questionCounter < numberOfQuestionsEntered && questionCounter != 0) {
-                            System.out.println("Entered here!");
-                            System.out.println("Question counter: " + questionCounter);
-                            Question nextQuestion = questions.get(questionCounter - 1);
-                            questionField.setText(nextQuestion.getDescription());
-                            answerBox.setSelectedItem(nextQuestion.getAnswer());
-                            questionNumberLabel.setText("Question" + (questionCounter) + ":");
-                        }
-                    }
-                });
-            }
-        }
-        this.revalidate();
-        this.repaint();
-    }   */
 }
