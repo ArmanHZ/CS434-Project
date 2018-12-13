@@ -9,16 +9,19 @@ public class ExamPortalController {
 
     private ExamPortalView view;
     private SQLConnection connection;
+    private static final String INSTRUCTOR_PASS = "53894";
     private List<Question> questions = new ArrayList<Question>();
     private ButtonGroup buttonGroup;
     private JSpinner timeLimit;
-    private JSpinner numQuestion;
+//    private JSpinner numQuestion;
     private JTextArea questionArea;
     private JComboBox trueFalseOption;
     private JComboBox multipleChoiceOption;
     private ArrayList<JCheckBox> testOptions;
     public static List<List<Question>> exams = new ArrayList<>();
     private int pageCounter = 0;
+
+    private static final Mediator MEDIATOR = new MediatorImpl();
 
     public ExamPortalController() {
         view = new ExamPortalView(this);
@@ -30,10 +33,23 @@ public class ExamPortalController {
 
         if (password.equals(rePassword) && isValidEmail(email)) {
             connection.registerStudent(name, username, password, email, department);
+            JOptionPane.showMessageDialog(null, "Register complete!", "Success", JOptionPane.INFORMATION_MESSAGE);
             view.resetLoginPanel(this);
         }
         else
             JOptionPane.showMessageDialog(view, "Password mismatch or Incorrect E-mail address", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void instructorRegisterButtonClicked(String name, String username, String password,
+                                                String rePassword, String email, String code, String department) {
+        if (password.equals(rePassword) && code.equals(INSTRUCTOR_PASS) && isValidEmail(email)) {
+            connection.registerInstructor(name, username, password, email, department);
+            JOptionPane.showMessageDialog(null, "Register complete!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            view.resetLoginPanel(this);
+        } else {
+            JOptionPane.showMessageDialog(null, "Check your Password or Instructor Code or Email!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private boolean isValidEmail(String email) {
@@ -46,13 +62,33 @@ public class ExamPortalController {
 
     public void studentLogin(String username, String password, JPanel studentPanel) {
         if (connection.studentLoginCheck(username, password)) {
-            System.out.println("Valid User");
-            view.setStudentPanel(studentPanel);
+            ExamPortalView.CURRENT_STUDENT = username;
+            view.setStudentPanel(studentPanel, this);
         } else {
             JOptionPane.showMessageDialog(null, "Username or Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    public void viewLatestScore(JPanel studentMiddlePanel) {
+        studentMiddlePanel.removeAll();
+        String grade = connection.getLatestScore();
+        studentMiddlePanel.add(new JLabel("Your latest grade is: " + grade));
+        System.out.println(grade);
+        studentMiddlePanel.revalidate();
+        studentMiddlePanel.repaint();
+    }
+
+    public void instructorLogin(String username, String password) {
+        if (connection.instructorLoginCheck(username, password)) {
+            ExamPortalView.CURRENT_INSTRUCTOR = username;
+            System.out.println("Valid User");   // Delete later
+            view.initInstructorPanel(this);
+        } else {
+            JOptionPane.showMessageDialog(null, "Username or Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // For instructor
     public void viewStudentScores(JPanel middlePanel, JPanel bottomPanel) {
         middlePanel.removeAll();
         bottomPanel.removeAll();
@@ -61,6 +97,49 @@ public class ExamPortalController {
         middlePanel.add(scrollPane);
         middlePanel.revalidate();
         middlePanel.repaint();
+    }
+
+    public void sendMessage() {
+        String message = JOptionPane.showInputDialog(null, "Enter your message", "Message", JOptionPane.INFORMATION_MESSAGE);
+        User temp = new Student(MEDIATOR, ExamPortalView.CURRENT_STUDENT);
+        temp.sendMessage(message);
+    }
+
+    public void viewMessages(JPanel middlePanel) {
+        JPanel temporaryPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        middlePanel.removeAll();
+        middlePanel.add(temporaryPanel);
+        MessageIterator iterator = new MessageIterator(MEDIATOR);
+        while (iterator.hasNext()) {
+            String message = (String)iterator.next();
+            temporaryPanel.add(new JLabel(message), gbc);
+            gbc.gridy++;
+        }
+        middlePanel.revalidate();
+        middlePanel.repaint();
+    }
+
+    public void changeStudentPassword() {
+        String newPassword = JOptionPane.showInputDialog(null, "Enter your new password!", "Password Change", JOptionPane.INFORMATION_MESSAGE);
+        if (!newPassword.equals("")) {
+            connection.changeStudentPassword(newPassword);
+            JOptionPane.showMessageDialog(null, "Password changed", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Password can not be Null!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void changeInstructorPassword() {
+        String newPassword = JOptionPane.showInputDialog(null, "Enter your new password!", "Password Change", JOptionPane.INFORMATION_MESSAGE);
+        if (!newPassword.equals("")) {
+            connection.changeInstructorPassword(newPassword);
+            JOptionPane.showMessageDialog(null, "Password changed", "Info", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Password can not be Null!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void createExamPanel(JPanel middlePanel, JPanel bottomPanel) {
@@ -127,12 +206,12 @@ public class ExamPortalController {
         gbc.gridx = 1;
         timeLimit = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
         panel.add(timeLimit, gbc);
-        gbc.gridy++;
-        gbc.gridx = 0;
-        panel.add(new JLabel("Number of Questions: "), gbc);
-        gbc.gridx = 1;
-        numQuestion = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-        panel.add(numQuestion, gbc);
+//        gbc.gridy++;
+//        gbc.gridx = 0;
+//        panel.add(new JLabel("Number of Questions: "), gbc);
+//        gbc.gridx = 1;
+//        numQuestion = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
+//        panel.add(numQuestion, gbc);
         return panel;
     }
 
@@ -221,7 +300,7 @@ public class ExamPortalController {
             questions.add(question);
             System.out.println((pageCounter + 1) + " " + question);
         } else {
-            JOptionPane.showMessageDialog(null, "Please write your question!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Please write your question first!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -233,7 +312,7 @@ public class ExamPortalController {
             middlePanel.revalidate();
             middlePanel.repaint();
         } else {
-            JOptionPane.showMessageDialog(null, "Please write your question!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Please write your question first!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

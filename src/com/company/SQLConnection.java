@@ -63,6 +63,22 @@ public class SQLConnection {
         }
     }
 
+    public void registerInstructor(String name, String username, String password, String email, String department) {
+        String query = "INSERT INTO instructors (iName, iUsername, iPassword, iEmail, iDepartment)" +
+                " VALUES ('" + name + "', '" + username + "', '" + password + "', '" + email + "', '" + department + "');";
+        try {
+            if (!doesUserExist(username, INSTRUCTOR_USERNAME_COLUMN_LABEL)) {
+                Statement statement = CONNECTION.createStatement();
+                statement.executeUpdate(query);
+                System.out.println("Instructor added successfully");
+            } else {
+                JOptionPane.showMessageDialog(null, "Username already exists", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private boolean doesUserExist(String username, String columnLabel) {
         String query = "";
         if (columnLabel.equals("sUsername"))
@@ -99,6 +115,59 @@ public class SQLConnection {
             }
         }
         return false;
+    }
+
+    public boolean instructorLoginCheck(String username, String password) {
+        if (doesUserExist(username, "iUsername")) {
+            try {
+                String query = "SELECT I.iPassword FROM instructors I WHERE I.iUsername = \"" + username + "\";";
+                String userPass = "";
+                Statement statement = CONNECTION.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+                if (resultSet.next())
+                    userPass = resultSet.getString("iPassword");
+                return userPass.equals(password);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public void changeStudentPassword(String newPassword) {
+        try {
+            String query = "UPDATE students SET sPassword='" + newPassword + "' WHERE sUsername='" + ExamPortalView.CURRENT_STUDENT + "';";
+            Statement statement = CONNECTION.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeInstructorPassword(String newPassword) {
+        try {
+            String query = "UPDATE instructors SET iPassword='" + newPassword + "' WHERE iUsername='" + ExamPortalView.CURRENT_INSTRUCTOR + "';";
+            Statement statement = CONNECTION.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // For Student
+    public String getLatestScore() {
+        String query = "SELECT sLatestGrade FROM students WHERE sUsername='" + ExamPortalView.CURRENT_STUDENT + "';";
+        String grade = "";
+        try {
+            Statement statement = CONNECTION.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next())
+                grade = resultSet.getString("sLatestGrade");
+            return grade;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public JTable getStudentScoresTable() {
