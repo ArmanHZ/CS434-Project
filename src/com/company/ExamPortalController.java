@@ -394,10 +394,10 @@ public class ExamPortalController {
             }
         });
         previous.addActionListener(e -> {
-            if ((pageCounter - 1) < exam.getQuestions().size()) {
+            if ((pageCounter - 1) >= 0) {
+                pageCounter--;
                 questionLabel.setText(exam.getQuestions().get(pageCounter).getDescription());
                 answerField.setText("");
-                pageCounter--;
             } else {
                 JOptionPane.showMessageDialog(null, "No more pages left" , "Info", JOptionPane.INFORMATION_MESSAGE);
             }
