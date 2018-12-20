@@ -2,6 +2,8 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +12,16 @@ public class ExamPortalController {
     private ExamPortalView view;
     private SQLConnection connection;
     private static final String INSTRUCTOR_PASS = "53894";
-    private List<Question> questions = new ArrayList<Question>();
+    private ArrayList<Question> questions = new ArrayList<Question>();
     private ButtonGroup buttonGroup;
-    private JSpinner timeLimit;
+    private JTextField examTitle;
     private JTextArea questionArea;
     private JComboBox trueFalseOption;
     private JComboBox multipleChoiceOption;
     private ArrayList<JCheckBox> testOptions;
-    public static List<List<Question>> exams = new ArrayList<>();
+    public static ArrayList<Exam> exams = new ArrayList<>();
     private int pageCounter = 0;
+    private int numberOfCorrectAnswers = 0;
 
     private static final Mediator MEDIATOR = new MediatorImpl();
 
@@ -104,12 +107,13 @@ public class ExamPortalController {
         temp.sendMessage(message);
     }
 
-    public void viewMessages(JPanel middlePanel) {
+    public void viewMessages(JPanel middlePanel, JPanel bottomPanel) {
         JPanel temporaryPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
         gbc.gridx = 0;
         middlePanel.removeAll();
+        bottomPanel.removeAll();
         middlePanel.add(temporaryPanel);
         MessageIterator iterator = new MessageIterator(MEDIATOR);
         while (iterator.hasNext()) {
@@ -119,6 +123,8 @@ public class ExamPortalController {
         }
         middlePanel.revalidate();
         middlePanel.repaint();
+        bottomPanel.revalidate();
+        bottomPanel.repaint();
     }
 
     public void changeStudentPassword() {
@@ -143,14 +149,14 @@ public class ExamPortalController {
 
     public void createExamPanel(JPanel middlePanel, JPanel bottomPanel) {
         middlePanel.removeAll();
-        if (!questions.isEmpty())
-            saveQuestionsToExams(questions);
-        questions.clear();  // Whenever the Create Exam button is clicked the previous Questions are cleared.
+        questions = new ArrayList<>();  // Whenever the Create Exam button is clicked the previous Questions are cleared.
         pageCounter = 0;
         int result = JOptionPane.showConfirmDialog(null, questionTypeSelect(), "Question Select", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
+        if (result == JOptionPane.OK_OPTION && !examTitle.getText().equals("")) {
             createExam(middlePanel);
             createExamBottomButtons(middlePanel, bottomPanel);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please fill all the information!", "Error", JOptionPane.ERROR_MESSAGE);
         }
         middlePanel.revalidate();
         middlePanel.repaint();
@@ -201,16 +207,10 @@ public class ExamPortalController {
         panel.add(test, gbc);
         gbc.gridy++;
         gbc.gridx = 0;
-        panel.add(new JLabel("Time limit in Minutes(0 for unlimited): "), gbc);
+        panel.add(new JLabel("Exam Title: "), gbc);
         gbc.gridx = 1;
-        timeLimit = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-        panel.add(timeLimit, gbc);
-//        gbc.gridy++;
-//        gbc.gridx = 0;
-//        panel.add(new JLabel("Number of Questions: "), gbc);
-//        gbc.gridx = 1;
-//        numQuestion = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-//        panel.add(numQuestion, gbc);
+        examTitle = new JTextField(10);
+        panel.add(examTitle, gbc);
         return panel;
     }
 
@@ -274,9 +274,12 @@ public class ExamPortalController {
         saveQuestion.addActionListener(e -> saveQuestion());
         JButton previous = new JButton("Previous");
         previous.addActionListener(e -> previousQuestion(middlePanel));
+        JButton uploadExam = new JButton("Upload Exam");
+        uploadExam.addActionListener(e -> uploadExam(middlePanel, bottomPanel));
         bottomPanel.add(previous);
         bottomPanel.add(next);
         bottomPanel.add(saveQuestion);
+        bottomPanel.add(uploadExam);
         bottomPanel.revalidate();
         bottomPanel.repaint();
     }
@@ -297,7 +300,6 @@ public class ExamPortalController {
             }
             Question question = new Question(description, answer, type);
             questions.add(question);
-            System.out.println((pageCounter + 1) + " " + question);
         } else {
             JOptionPane.showMessageDialog(null, "Please write your question first!", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -328,22 +330,106 @@ public class ExamPortalController {
         }
     }
 
+    private void uploadExam(JPanel middlePanel, JPanel bottomPanel) {
+        if(!questions.isEmpty()) {
+            middlePanel.removeAll();
+            bottomPanel.removeAll();
+            Exam exam = new Exam(examTitle.getText());
+            ArrayList<Question> temp = questions;
+            exam.setQuestions(temp);
+            exams.add(exam);
+            middlePanel.revalidate();
+            middlePanel.repaint();
+            bottomPanel.revalidate();
+            bottomPanel.repaint();
+        } else {
+            JOptionPane.showMessageDialog(null, "Please write your question first!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public void viewExams(JPanel middlePanel) {
-        System.out.println("Clicked");
         middlePanel.removeAll();
-        for (int i = 0; i < exams.size(); i++) {
-            for (int j = 0; j < exams.get(i).size(); j++) {
-                System.out.println(exams.get(i).get(j));
-            }
+        middlePanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = gbc.gridy = 0;
+        for (Exam exam : exams) {
+            JLabel label = new JLabel("Exam title: " + exam.toString() + " Created by: " + ExamPortalView.CURRENT_INSTRUCTOR);
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                        createStudentExam(middlePanel, exam);
+                }
+            });
+            middlePanel.add(label, gbc);
+            gbc.gridy++;
         }
         middlePanel.revalidate();
         middlePanel.repaint();
     }
 
-    private void saveQuestionsToExams(List<Question> questions) {
-        List<Question> temp = new ArrayList<Question>();
-        temp = questions;
-        exams.add(temp);
+    public void createStudentExam(JPanel middlePanel, Exam exam) {
+        middlePanel.removeAll();
+        middlePanel.setLayout(new BorderLayout());
+        JPanel questionPanel = new JPanel();
+        pageCounter = 0;
+        JLabel questionLabel = new JLabel();
+        questionLabel.setText(exam.getQuestions().get(pageCounter).getDescription());
+        JPanel bottomPanel = new JPanel();
+        JButton previous = new JButton("Previous");
+        JButton next = new JButton("Next");
+        JButton submit = new JButton("Submit Question");
+        JButton finish = new JButton("Finish exam");
+        JLabel answerLabel = new JLabel("Your Answer: ");
+        middlePanel.add(answerLabel);
+        JTextField answerField = new JTextField(15);
+        questionPanel.add(questionLabel);
+        questionPanel.add(answerField);
+        next.addActionListener(e -> {
+            if ((pageCounter + 1) < exam.getQuestions().size()) {
+                pageCounter++;
+                questionLabel.setText(exam.getQuestions().get(pageCounter).getDescription());
+                answerField.setText("");
+            } else {
+                JOptionPane.showMessageDialog(null, "No more pages left" , "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        previous.addActionListener(e -> {
+            if ((pageCounter - 1) < exam.getQuestions().size()) {
+                questionLabel.setText(exam.getQuestions().get(pageCounter).getDescription());
+                answerField.setText("");
+                pageCounter--;
+            } else {
+                JOptionPane.showMessageDialog(null, "No more pages left" , "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        submit.addActionListener(e -> {
+            System.out.println(exam.getQuestions().get(pageCounter).getAnswer());
+            if(exam.getQuestions().get(pageCounter).getAnswer().equals(answerField.getText())) {
+                System.out.println(answerField.getText());
+                numberOfCorrectAnswers++;
+            }
+        });
+        finish.addActionListener(e -> {
+            System.out.println("Correct answers: " + numberOfCorrectAnswers);
+            System.out.println("Exam questions: " + exam.getQuestions().size());
+            double score = 100 * ((double)numberOfCorrectAnswers / (double)exam.getQuestions().size());
+            int finalScore = (int)score;
+            JOptionPane.showMessageDialog(null, "Your Score is: " + finalScore, "Info", JOptionPane.INFORMATION_MESSAGE);
+            connection.updateScore(ExamPortalView.CURRENT_STUDENT, finalScore);
+            middlePanel.removeAll();
+            middlePanel.revalidate();
+            middlePanel.repaint();
+        });
+        bottomPanel.add(previous);
+        bottomPanel.add(next);
+        bottomPanel.add(submit);
+        bottomPanel.add(finish);
+        middlePanel.add(questionPanel, BorderLayout.CENTER);
+        middlePanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        middlePanel.revalidate();
+        middlePanel.repaint();
+
     }
 
 }

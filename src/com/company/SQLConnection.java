@@ -7,8 +7,8 @@ import java.sql.*;
 
 public class SQLConnection {
 
-    private static SQLConnection SQL_CONNECTION = new SQLConnection();
-    private static Connection CONNECTION;
+    private static SQLConnection SQL_CONNECTION = null;
+    private static Connection CONNECTION ;
     private static final String STUDENT_USERNAME_COLUMN_LABEL = "sUsername";
     private static final String INSTRUCTOR_USERNAME_COLUMN_LABEL = "iUsername";
 
@@ -35,7 +35,11 @@ public class SQLConnection {
     }
 
     public static SQLConnection getInstance() {
-        return SQL_CONNECTION;
+        if (SQL_CONNECTION == null) {
+            SQL_CONNECTION = new SQLConnection();
+            return SQL_CONNECTION;
+        } else
+            return SQL_CONNECTION;
     }
 
     private void disconnect() {
@@ -212,6 +216,16 @@ public class SQLConnection {
         table.setPreferredScrollableViewportSize(new Dimension(450,63));
         table.setFillsViewportHeight(true);
         return table;
+    }
+
+    public void updateScore(String studentName, int score) {
+        String query = "UPDATE students SET sLatestGrade='" + score + "' WHERE sUsername='" + studentName + "'";
+        try {
+            Statement statement = CONNECTION.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

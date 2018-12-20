@@ -189,7 +189,7 @@ public class ExamPortalView extends JFrame {
         changePassword.setFont(TEXT_FONT_BOLD);
         upperPanel.add(changePassword);
         JButton viewMessage = new JButton("View Message");
-        viewMessage.addActionListener(e -> controller.viewMessages(middlePanel));
+        viewMessage.addActionListener(e -> controller.viewMessages(middlePanel, bottomPanel));
         viewMessage.setFont(TEXT_FONT_BOLD);
         upperPanel.add(viewMessage);
         JButton logOut = new JButton("Log Out");
@@ -429,8 +429,8 @@ public class ExamPortalView extends JFrame {
 
     protected void resetLoginPanel(ExamPortalController controller) {
         this.getContentPane().removeAll();
-        CURRENT_STUDENT = "";
-        CURRENT_INSTRUCTOR = "";
+        //CURRENT_STUDENT = "";
+        //CURRENT_INSTRUCTOR = "";
         loginPanel(controller);
     }
 
