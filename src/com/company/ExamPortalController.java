@@ -12,7 +12,7 @@ public class ExamPortalController {
     private ExamPortalView view;
     private SQLConnection connection;
     private static final String INSTRUCTOR_PASS = "53894";
-    private ArrayList<Question> questions = new ArrayList<Question>();
+    private ArrayList<Question> questions = new ArrayList<>();
     private ButtonGroup buttonGroup;
     private JTextField examTitle;
     private JTextArea questionArea;
@@ -37,8 +37,7 @@ public class ExamPortalController {
             connection.registerStudent(name, username, password, email, department);
             JOptionPane.showMessageDialog(null, "Register complete!", "Success", JOptionPane.INFORMATION_MESSAGE);
             view.resetLoginPanel(this);
-        }
-        else
+        } else
             JOptionPane.showMessageDialog(view, "Password mismatch or Incorrect E-mail address", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -83,7 +82,7 @@ public class ExamPortalController {
     public void instructorLogin(String username, String password) {
         if (connection.instructorLoginCheck(username, password)) {
             ExamPortalView.CURRENT_INSTRUCTOR = username;
-            System.out.println("Valid User");   // Delete later
+            System.out.println("Valid User");
             view.initInstructorPanel(this);
         } else {
             JOptionPane.showMessageDialog(null, "Username or Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -117,7 +116,7 @@ public class ExamPortalController {
         middlePanel.add(temporaryPanel);
         MessageIterator iterator = new MessageIterator(MEDIATOR);
         while (iterator.hasNext()) {
-            String message = (String)iterator.next();
+            String message = (String) iterator.next();
             temporaryPanel.add(new JLabel(message), gbc);
             gbc.gridy++;
         }
@@ -217,9 +216,9 @@ public class ExamPortalController {
     private void createTrueFalseQuestionPage(JPanel middlePanel) {
         JLabel question = new JLabel("Question" + (pageCounter + 1) + ": ");
         questionArea = new JTextArea();
-        questionArea.setPreferredSize(new Dimension(300,100));
+        questionArea.setPreferredSize(new Dimension(300, 100));
         JLabel answer = new JLabel("Answer: ");
-        String [] options = { "T", "F" };
+        String[] options = {"T", "F"};
         trueFalseOption = new JComboBox(options);
         middlePanel.add(question);
         middlePanel.add(questionArea);
@@ -230,7 +229,7 @@ public class ExamPortalController {
     private void createMultiQuestionPage(JPanel middlePanel) {
         JLabel question = new JLabel("Question" + (pageCounter + 1) + ": ");
         questionArea = new JTextArea();
-        questionArea.setPreferredSize(new Dimension(300,100));
+        questionArea.setPreferredSize(new Dimension(300, 100));
         JLabel answer = new JLabel("Answer: ");
         String[] options = {"A", "B", "C", "D", "E"};
         multipleChoiceOption = new JComboBox(options);
@@ -243,7 +242,7 @@ public class ExamPortalController {
     private void createTestQuestionPage(JPanel middlePanel) {
         JLabel question = new JLabel("Question" + (pageCounter + 1) + ": ");
         questionArea = new JTextArea();
-        questionArea.setPreferredSize(new Dimension(300,100));
+        questionArea.setPreferredSize(new Dimension(300, 100));
         JLabel answer = new JLabel("Answer: ");
         testOptions = new ArrayList<>();
         JCheckBox firstOption = new JCheckBox("A");
@@ -285,7 +284,7 @@ public class ExamPortalController {
     }
 
     private void saveQuestion() {
-        if(!questionArea.getText().equals("")) {
+        if (!questionArea.getText().equals("")) {
             String description = questionArea.getText();
             String type = getExamType();
             String answer = "";
@@ -306,7 +305,7 @@ public class ExamPortalController {
     }
 
     private void nextQuestion(JPanel middlePanel) {
-        if(!questionArea.getText().equals("")) {
+        if (!questionArea.getText().equals("")) {
             pageCounter++;
             middlePanel.removeAll();
             createExam(middlePanel);
@@ -318,7 +317,7 @@ public class ExamPortalController {
     }
 
     private void previousQuestion(JPanel middlePanel) {
-        if (pageCounter>0) {
+        if (pageCounter > 0) {
             pageCounter--;
             middlePanel.removeAll();
             createExam(middlePanel);
@@ -331,7 +330,7 @@ public class ExamPortalController {
     }
 
     private void uploadExam(JPanel middlePanel, JPanel bottomPanel) {
-        if(!questions.isEmpty()) {
+        if (!questions.isEmpty()) {
             middlePanel.removeAll();
             bottomPanel.removeAll();
             Exam exam = new Exam(examTitle.getText());
@@ -357,7 +356,7 @@ public class ExamPortalController {
             label.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                        createStudentExam(middlePanel, exam);
+                    createStudentExam(middlePanel, exam);
                 }
             });
             middlePanel.add(label, gbc);
@@ -390,7 +389,7 @@ public class ExamPortalController {
                 questionLabel.setText(exam.getQuestions().get(pageCounter).getDescription());
                 answerField.setText("");
             } else {
-                JOptionPane.showMessageDialog(null, "No more pages left" , "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No more pages left", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         previous.addActionListener(e -> {
@@ -399,12 +398,12 @@ public class ExamPortalController {
                 questionLabel.setText(exam.getQuestions().get(pageCounter).getDescription());
                 answerField.setText("");
             } else {
-                JOptionPane.showMessageDialog(null, "No more pages left" , "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No more pages left", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         submit.addActionListener(e -> {
             System.out.println(exam.getQuestions().get(pageCounter).getAnswer());
-            if(exam.getQuestions().get(pageCounter).getAnswer().equals(answerField.getText())) {
+            if (exam.getQuestions().get(pageCounter).getAnswer().equals(answerField.getText())) {
                 System.out.println(answerField.getText());
                 numberOfCorrectAnswers++;
             }
@@ -412,8 +411,8 @@ public class ExamPortalController {
         finish.addActionListener(e -> {
             System.out.println("Correct answers: " + numberOfCorrectAnswers);
             System.out.println("Exam questions: " + exam.getQuestions().size());
-            double score = 100 * ((double)numberOfCorrectAnswers / (double)exam.getQuestions().size());
-            int finalScore = (int)score;
+            double score = 100 * ((double) numberOfCorrectAnswers / (double) exam.getQuestions().size());
+            int finalScore = (int) score;
             JOptionPane.showMessageDialog(null, "Your Score is: " + finalScore, "Info", JOptionPane.INFORMATION_MESSAGE);
             connection.updateScore(ExamPortalView.CURRENT_STUDENT, finalScore);
             middlePanel.removeAll();
@@ -426,7 +425,6 @@ public class ExamPortalController {
         bottomPanel.add(finish);
         middlePanel.add(questionPanel, BorderLayout.CENTER);
         middlePanel.add(bottomPanel, BorderLayout.SOUTH);
-
         middlePanel.revalidate();
         middlePanel.repaint();
 

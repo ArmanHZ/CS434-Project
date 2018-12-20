@@ -26,8 +26,10 @@ public class MessageIterator implements Iterator {
     }
 
     @Override
-    public void remove() { }
+    public void remove() {
+    }
 
     @Override
-    public void forEachRemaining(Consumer action) { }
+    public void forEachRemaining(Consumer action) {
+    }
 }

@@ -18,13 +18,7 @@ public class ExamPortalView extends JFrame {
 
     private JTextField usernameField;
     private JTextField passwordField;
-    private static JPanel instructorQuestionPanel = new JPanel();
-
     private JPanel instructorPanel;
-    private JPanel studentMiddlePanel;
-    private static int questionCounter = 0;
-    private static ArrayList<Question> questions = new ArrayList<Question>();
-    private static JComboBox answerBox = null;
 
 
     public ExamPortalView(ExamPortalController controller) {
@@ -109,7 +103,6 @@ public class ExamPortalView extends JFrame {
         studentPanel.removeAll();
         studentPanel.setLayout(new BorderLayout());
         this.add(studentPanel);
-//        setStudentMiddlePanel(studentPanel);
         setStudentPanelButtons(studentPanel, controller);
         this.setSize(1000, 500);
         this.setLocationRelativeTo(null);

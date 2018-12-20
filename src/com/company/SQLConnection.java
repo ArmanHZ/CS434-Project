@@ -8,7 +8,7 @@ import java.sql.*;
 public class SQLConnection {
 
     private static SQLConnection SQL_CONNECTION = null;
-    private static Connection CONNECTION ;
+    private static Connection CONNECTION;
     private static final String STUDENT_USERNAME_COLUMN_LABEL = "sUsername";
     private static final String INSTRUCTOR_USERNAME_COLUMN_LABEL = "iUsername";
 
@@ -209,11 +209,11 @@ public class SQLConnection {
     }
 
     private JTable createScoresTable(String[][] data) {
-        String[] columnNames = { "Student Names", "Latest Grade" };
+        String[] columnNames = {"Student Names", "Latest Grade"};
         DefaultTableModel defaultTableModel = new DefaultTableModel(data, columnNames);
         defaultTableModel.setColumnIdentifiers(columnNames);
         JTable table = new JTable(defaultTableModel);
-        table.setPreferredScrollableViewportSize(new Dimension(450,63));
+        table.setPreferredScrollableViewportSize(new Dimension(450, 63));
         table.setFillsViewportHeight(true);
         return table;
     }
