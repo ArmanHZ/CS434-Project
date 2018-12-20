@@ -73,7 +73,6 @@ public class ExamPortalController {
         studentMiddlePanel.removeAll();
         String grade = connection.getLatestScore();
         studentMiddlePanel.add(new JLabel("Your latest grade is: " + grade));
-        System.out.println(grade);
         studentMiddlePanel.revalidate();
         studentMiddlePanel.repaint();
     }
@@ -81,7 +80,6 @@ public class ExamPortalController {
     public void instructorLogin(String username, String password) {
         if (connection.instructorLoginCheck(username, password)) {
             ExamPortalView.CURRENT_INSTRUCTOR = username;
-            System.out.println("Valid User");
             view.initInstructorPanel(this);
         } else {
             JOptionPane.showMessageDialog(null, "Username or Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -321,7 +319,6 @@ public class ExamPortalController {
             middlePanel.removeAll();
             createExam(middlePanel);
             Question previousQuestion = questions.get(pageCounter);
-            System.out.println(previousQuestion);
             questionArea.setText(previousQuestion.getDescription());
             middlePanel.revalidate();
             middlePanel.repaint();
@@ -401,15 +398,11 @@ public class ExamPortalController {
             }
         });
         submit.addActionListener(e -> {
-            System.out.println(exam.getQuestions().get(pageCounter).getAnswer());
             if (exam.getQuestions().get(pageCounter).getAnswer().equals(answerField.getText())) {
-                System.out.println(answerField.getText());
                 numberOfCorrectAnswers++;
             }
         });
         finish.addActionListener(e -> {
-            System.out.println("Correct answers: " + numberOfCorrectAnswers);
-            System.out.println("Exam questions: " + exam.getQuestions().size());
             double score = 100 * ((double) numberOfCorrectAnswers / (double) exam.getQuestions().size());
             int finalScore = (int) score;
             JOptionPane.showMessageDialog(null, "Your Score is: " + finalScore, "Info", JOptionPane.INFORMATION_MESSAGE);
