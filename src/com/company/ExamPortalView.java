@@ -11,7 +11,7 @@ public class ExamPortalView extends JFrame {
     private static final Font HEADER_FONT = new Font("Rockwell", Font.BOLD, 24);
     private static final Font TEXT_FONT_PLAIN = new Font("Banschrift", Font.PLAIN, 16);
     private static final Font TEXT_FONT_BOLD = new Font("Banschrift", Font.BOLD, 18);
-    private static final Dimension TEXT_FIELD_DIM = new Dimension(180, 30);
+    private static final Dimension TEXT_FIELD_DIM = new Dimension(200, 30);
 
     protected static String CURRENT_INSTRUCTOR = "";
     protected static String CURRENT_STUDENT = "";
@@ -122,6 +122,7 @@ public class ExamPortalView extends JFrame {
         JPanel middlePanel = new JPanel();
         northPanel.setFont(TEXT_FONT_BOLD);
         JButton viewExams = new JButton("View Exams");
+        viewExams.addActionListener(e -> controller.viewExams(middlePanel));
         viewExams.setFont(TEXT_FONT_BOLD);
         JButton sendMessage = new JButton("Send Message");
         sendMessage.addActionListener(e -> controller.sendMessage());

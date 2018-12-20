@@ -13,7 +13,6 @@ public class ExamPortalController {
     private List<Question> questions = new ArrayList<Question>();
     private ButtonGroup buttonGroup;
     private JSpinner timeLimit;
-//    private JSpinner numQuestion;
     private JTextArea questionArea;
     private JComboBox trueFalseOption;
     private JComboBox multipleChoiceOption;
@@ -327,6 +326,18 @@ public class ExamPortalController {
             middlePanel.revalidate();
             middlePanel.repaint();
         }
+    }
+
+    public void viewExams(JPanel middlePanel) {
+        System.out.println("Clicked");
+        middlePanel.removeAll();
+        for (int i = 0; i < exams.size(); i++) {
+            for (int j = 0; j < exams.get(i).size(); j++) {
+                System.out.println(exams.get(i).get(j));
+            }
+        }
+        middlePanel.revalidate();
+        middlePanel.repaint();
     }
 
     private void saveQuestionsToExams(List<Question> questions) {

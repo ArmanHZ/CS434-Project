@@ -24,4 +24,5 @@ public class MediatorImpl implements Mediator {
     public String getMessageAt(int index) {
         return messages.get(index);
     }
+
 }
